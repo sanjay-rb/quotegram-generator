@@ -1,7 +1,9 @@
+import json
 import os
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import re
+from const import FILE_HASHTAG_TODAY, FILE_QUOTE_TODAY
 
 load_dotenv()
 
@@ -35,16 +37,22 @@ def generate_innovative_hashtags(quote: str) -> list:
             seen.add(tag.lower())
             unique_hashtags.append(tag)
 
-    with open("hashtags.txt", "w") as f:
+    with open(FILE_HASHTAG_TODAY, "w") as f:
         f.write(" ".join(unique_hashtags))
-    print("Hashtags saved to hashtags.txt")
+    print(f"Hashtags saved to {FILE_HASHTAG_TODAY}")
 
     return unique_hashtags
 
 
+def main():
+    with open(FILE_QUOTE_TODAY, "r") as f:
+        quote_data = json.load(f)
+
+    quote = quote_data.get("q", "Bitterness is like a cancer that enters the soul.")
+    tags = generate_innovative_hashtags(quote)
+    print("Generated Hashtags:", tags)
+
+
 # Example usage
 if __name__ == "__main__":
-    quote = "Bitterness is like a cancer that enters the soul."
-    tags = generate_innovative_hashtags(quote)
-    print("Innovative Hashtags:")
-    print(" ".join(tags))
+    main()
