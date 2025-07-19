@@ -40,7 +40,7 @@ def generate_quotegram_video(quote_data):
         # Generate a text clip. You can customize the font, color, etc.
         txt_clip = TextClip(
             text=f"{quote}\n- {author}",
-            font="Arial.ttf",
+            font="DejaVuSans-Bold",
             font_size=70,
             color="white",
             size=(1080, 1920),
