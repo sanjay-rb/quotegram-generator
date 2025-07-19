@@ -22,12 +22,21 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip install -r requirements.txt 
+          pip install -r requirements.txt
+          echo "${{ secrets.DOTENV }}" | base64 --decode > .env
 
-      # - name: Generate Quotegram Video
-      #   run: |
-      #     python3 motivation_video_generator.py
+      - name: Generate Quote
+        run: |
+          python3 quote_generator.py
 
-      # - name: Send Video to Telegram
-      #   run: |
-      #     python3 send_video_to_telegram.py
+      - name: Generate Hashtags
+        run: |
+          python3 hashtags_generator.py
+      
+      - name: Generate Quotegram Video
+        run: |
+          python3 quotegram_video_generator.py
+      
+      - name: Generate Telegram Message
+        run: |
+          python3 telegram_message_generator.py
