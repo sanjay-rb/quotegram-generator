@@ -40,7 +40,7 @@ def generate_quotegram_video(quote_data):
         # Generate a text clip. You can customize the font, color, etc.
         txt_clip = TextClip(
             text=f"{quote}\n- {author}",
-            font="DejaVuSans-Bold",
+            font="Arial.ttf",
             font_size=70,
             color="white",
             size=(1080, 1920),
@@ -54,7 +54,7 @@ def generate_quotegram_video(quote_data):
 
         final_video.audio = CompositeAudioClip([AudioFileClip(filename="bgm.mp3")])
         final_video.write_videofile(FILE_MOTIVATION_TODAY)
-        return final_video
+        return FILE_MOTIVATION_TODAY
     except Exception as e:
         print(f"Error generating quotegram video: {e}")
         return None
@@ -65,7 +65,10 @@ def main():
         quote_data = json.load(f)
 
     video = generate_quotegram_video(quote_data)
-    print("Generated quotegram video:", video.filename)
+    if video:
+        print("Generated quotegram video:", video)
+    else:
+        raise RuntimeError("Failed to generate quotegram video.")
 
 
 if __name__ == "__main__":

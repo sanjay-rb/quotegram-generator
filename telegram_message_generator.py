@@ -66,7 +66,10 @@ def main():
         quote_data = json.load(f)
 
     caption = generate_telegram_message(quote_data)
-    print("Generated telegram message:", caption)
+    if caption:
+        print("Generated telegram message:", caption)
+    else:
+        raise RuntimeError("Failed to generate telegram message.")
 
 
 if __name__ == "__main__":
