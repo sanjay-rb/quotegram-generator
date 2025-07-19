@@ -55,7 +55,10 @@ def main():
         quote_data = json.load(f)
 
     tags = generate_hashtags(quote_data)
-    print("Generated hashtags:", tags)
+    if tags:
+        print("Generated hashtags:", tags)
+    else:
+        raise RuntimeError("Failed to generate hashtags.")
 
 
 if __name__ == "__main__":
