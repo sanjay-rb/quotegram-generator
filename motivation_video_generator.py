@@ -1,3 +1,4 @@
+import json
 from moviepy import (
     CompositeAudioClip,
     VideoFileClip,
@@ -8,15 +9,22 @@ from moviepy import (
 )
 from dotenv import load_dotenv
 
-from const import FILE_BACKGROUND_VIDEO, FILE_MOTIVATION_TODAY, FILE_QUOTE_TODAY
-from quote_generator import get_todays_quote
+from const import (
+    DEFAULT_QUOTE,
+    FILE_BACKGROUND_VIDEO,
+    FILE_MOTIVATION_TODAY,
+    FILE_QUOTE_TODAY,
+)
 
 # Load environment variables
 load_dotenv()
 
 
 # 3. Create video with text and voiceover
-def create_motivational_video(quote):
+def create_motivational_video(quote_data):
+    quote = quote_data.get("q", DEFAULT_QUOTE["q"])
+    author = quote_data.get("a", DEFAULT_QUOTE["a"])
+    print(f"Generating video for quote: {quote} - {author}")
 
     # Load file example.mp4 and keep only the subclip from 00:00:10 to 00:00:20
     # Reduce the audio volume to 80% of its original volume
@@ -30,7 +38,7 @@ def create_motivational_video(quote):
 
     # Generate a text clip. You can customize the font, color, etc.
     txt_clip = TextClip(
-        text=f"{quote.get("q", "Bitterness is like a cancer that enters the soul.")}\n- {quote.get("a", "Sir Terry Waite")}",
+        text=f"{quote}\n- {author}",
         font="Arial.ttf",
         font_size=70,
         color="white",
@@ -45,14 +53,15 @@ def create_motivational_video(quote):
 
     final_video.audio = CompositeAudioClip([AudioFileClip(filename="bgm.mp3")])
     final_video.write_videofile(FILE_MOTIVATION_TODAY)
+    return final_video
 
 
-# 4. Main pipeline
 def main():
     with open(FILE_QUOTE_TODAY, "r") as f:
-        quote = dict(f.read())
-    print(f"Today's quote: {quote}")
-    create_motivational_video(quote)
+        quote_data = json.load(f)
+
+    video = create_motivational_video(quote_data)
+    print("Generated Video:", video.filename)
 
 
 if __name__ == "__main__":
