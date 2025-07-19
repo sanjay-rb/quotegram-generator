@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '30 16 * * *' # 10:00 PM IST is 4:30 PM UTC
 
 jobs:
   quotegram-generator-and-telegram:
