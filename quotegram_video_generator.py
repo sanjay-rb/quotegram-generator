@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from const import (
     DEFAULT_QUOTE,
     FILE_BACKGROUND_VIDEO,
+    FILE_FONT,
     FILE_MOTIVATION_TODAY,
     FILE_QUOTE_TODAY,
 )
@@ -40,8 +41,8 @@ def generate_quotegram_video(quote_data):
         # Generate a text clip. You can customize the font, color, etc.
         txt_clip = TextClip(
             text=f"{quote}\n- {author}",
-            font="DejaVuSans-Bold",
-            font_size=70,
+            font=FILE_FONT,
+            font_size=60,
             color="white",
             size=(1080, 1920),
             method="caption",
