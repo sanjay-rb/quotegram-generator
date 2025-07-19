@@ -208,3 +208,6 @@ __marimo__/
 
 # My Ignore
 .DS_Store
+hashtags.txt
+quote_today.json
+motivation_today.mp4
