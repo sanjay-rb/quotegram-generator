@@ -35,12 +35,16 @@ def generate_innovative_hashtags(quote: str) -> list:
             seen.add(tag.lower())
             unique_hashtags.append(tag)
 
+    with open("hashtags.txt", "w") as f:
+        f.write(" ".join(unique_hashtags))
+    print("Hashtags saved to hashtags.txt")
+
     return unique_hashtags
 
 
 # Example usage
 if __name__ == "__main__":
-    quote = "The only limit to our realization of tomorrow is our doubts of today."
+    quote = "Bitterness is like a cancer that enters the soul."
     tags = generate_innovative_hashtags(quote)
     print("Innovative Hashtags:")
     print(" ".join(tags))

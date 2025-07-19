@@ -6,31 +6,23 @@ from moviepy import (
     AudioFileClip,
     vfx,
 )
-import requests
+from dotenv import load_dotenv
 
-# Paths
-BACKGROUND_VIDEO = "background.mp4"  # Use a royalty-free video or your own
-OUTPUT_VIDEO = "motivation_today.mp4"
+from const import FILE_BACKGROUND_VIDEO, FILE_MOTIVATION_TODAY, FILE_QUOTE_TODAY
+from quote_generator import get_todays_quote
 
-
-# 1. Load quote for today
-def get_today_quote():
-    response = requests.get("https://zenquotes.io/api/today")
-    response.raise_for_status()
-    data = response.json()
-    if isinstance(data, list) and data:
-        return data[0]
-    else:
-        raise ValueError("Failed to fetch quote from API.")
+# Load environment variables
+load_dotenv()
 
 
 # 3. Create video with text and voiceover
-def create_motivational_video(quote, background_path, output_path):
+def create_motivational_video(quote):
+
     # Load file example.mp4 and keep only the subclip from 00:00:10 to 00:00:20
     # Reduce the audio volume to 80% of its original volume
 
     clip = (
-        VideoFileClip(background_path)
+        VideoFileClip(FILE_BACKGROUND_VIDEO)
         .subclipped(10, 20)
         .resized(new_size=(1080, 1920))
         .with_volume_scaled(0.8)
@@ -52,14 +44,15 @@ def create_motivational_video(quote, background_path, output_path):
     final_video = CompositeVideoClip([clip, txt_clip])
 
     final_video.audio = CompositeAudioClip([AudioFileClip(filename="bgm.mp3")])
-    final_video.write_videofile(output_path)
+    final_video.write_videofile(FILE_MOTIVATION_TODAY)
 
 
 # 4. Main pipeline
 def main():
-    quote = get_today_quote()
+    with open(FILE_QUOTE_TODAY, "r") as f:
+        quote = dict(f.read())
     print(f"Today's quote: {quote}")
-    create_motivational_video(quote, BACKGROUND_VIDEO, OUTPUT_VIDEO)
+    create_motivational_video(quote)
 
 
 if __name__ == "__main__":
