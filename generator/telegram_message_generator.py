@@ -5,16 +5,16 @@ from dotenv import load_dotenv
 
 from const import *
 
-# Load environment variables
-load_dotenv()
-
-# --- Configuration ---
-bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
-chat_id = os.environ["TELEGRAM_CHAT_ID"]  # e.g., 123456789
-
 
 def generate_telegram_message(quote_data):
     try:
+        # Load environment variables
+        load_dotenv()
+
+        # --- Configuration ---
+        bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
+        chat_id = os.environ["TELEGRAM_CHAT_ID"]  # e.g., 123456789
+
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
         print(f"Generating telegram message: {quote} - {author}")

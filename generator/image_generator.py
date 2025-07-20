@@ -4,16 +4,16 @@ from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 from const import *
 
-load_dotenv()
-
-client = InferenceClient(
-    provider="hf-inference",
-    api_key=os.environ["HF_TOKEN"],
-)
-
 
 def generate_image_from_quote(quote_data: dict) -> str:
     try:
+        load_dotenv()
+
+        client = InferenceClient(
+            provider="hf-inference",
+            api_key=os.environ["HF_TOKEN"],
+        )
+
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
         prompt = f"{quote} - {author}, inspirational, cinematic, trending on artstation, 4k, Make sure that you keep space on top & left corner empty. Expected result in high quality, detailed, vibrant colors, modern art style"
