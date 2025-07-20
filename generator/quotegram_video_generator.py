@@ -11,13 +11,12 @@ import os
 
 from const import *
 
-# Load environment variables
-load_dotenv()
-
 
 # 3. Create video with text and voiceover
 def generate_quotegram_video(quote_data):
     try:
+        # Load environment variables
+        load_dotenv()
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
         print(f"Generating quotegram video: {quote} - {author}")
