@@ -1,12 +1,10 @@
 name: Main Branch Push
 
 on:
-  push:
-    branches:
-      - main
   schedule:
-    - cron: '30 4 * * 1,3,5' # 10:00 AM IST is 4:30 AM UTC on Mon, Wed, Fri
+    - cron: '30 3 * * 1,3,5'  # 9:00 AM IST = 3:30 AM UTC on Mon, Wed, Fri
   workflow_dispatch:
+
 
 jobs:
   quotegram-generator-and-telegram:
