@@ -8,7 +8,7 @@ load_dotenv()
 
 client = InferenceClient(
     provider="hf-inference",
-    api_key=os.environ["HF_TOKEN_2"],
+    api_key=os.environ["HF_TOKEN"],
 )
 
 

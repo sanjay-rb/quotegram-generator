@@ -9,8 +9,8 @@ from const import *
 load_dotenv()
 
 # --- Configuration ---
-bot_token = os.environ["TELEGRAM_TOKEN"]
-chat_id = os.environ["TELEGRAM_TO"]  # e.g., 123456789
+bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
+chat_id = os.environ["TELEGRAM_CHAT_ID"]  # e.g., 123456789
 
 
 def generate_telegram_message(quote_data):
