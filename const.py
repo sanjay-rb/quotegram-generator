@@ -8,3 +8,4 @@ DEFAULT_QUOTE = {
     "a": "Sir Terry Waite",
 }  # Default quote if none is provided
 FILE_FONT = "My-WinkyRough.ttf"  # Font file for text overlay
+FILE_IMAGE_TODAY = "image_today.png"  # File to save today's generated image
