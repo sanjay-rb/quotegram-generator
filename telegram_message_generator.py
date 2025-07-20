@@ -27,20 +27,20 @@ def generate_telegram_message(quote_data):
         with open(FILE_HASHTAG_TODAY, "r") as f:
             hashtags = f.read().strip()
         caption_text = f"""{quote}
-    - {author}
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    {hashtags}
+- {author}
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+{hashtags}
     """
         # --- Send the video ---
         with open(FILE_MOTIVATION_TODAY, "rb") as video_file:
