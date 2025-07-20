@@ -2,3 +2,4 @@ openai==1.97.0
 python-dotenv==1.1.1
 moviepy==2.2.1
 requests==2.32.4
+huggingface-hub==0.33.4

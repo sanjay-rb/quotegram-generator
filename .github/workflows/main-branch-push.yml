@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '30 16 * * *' # 10:00 PM IST is 4:30 PM UTC
+    - cron: '30 4 * * 1,3,5' # 10:00 AM IST is 4:30 AM UTC on Mon, Wed, Fri
 
 jobs:
   quotegram-generator-and-telegram:
@@ -29,16 +29,20 @@ jobs:
 
       - name: Generate Quote
         run: |
-          python3 quote_generator.py
+          python3 generator/quote_generator.py
+      
+      - name: Generate Image
+        run: |
+          python3 generator/image_generator.py
 
       - name: Generate Hashtags
         run: |
-          python3 hashtags_generator.py
+          python3 generator/hashtags_generator.py
       
       - name: Generate Quotegram Video
         run: |
-          python3 quotegram_video_generator.py
+          python3 generator/quotegram_video_generator.py
       
       - name: Generate Telegram Message
         run: |
-          python3 telegram_message_generator.py
+          python3 generator/telegram_message_generator.py
