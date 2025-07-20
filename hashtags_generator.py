@@ -1,15 +1,16 @@
 import json
 import os
-from huggingface_hub import InferenceClient
-from dotenv import load_dotenv
 import re
+from openai import OpenAI
+from dotenv import load_dotenv
+
 from const import DEFAULT_QUOTE, FILE_HASHTAG_TODAY, FILE_QUOTE_TODAY
 
 load_dotenv()
 
-client = InferenceClient(
-    provider="novita",
-    api_key=os.environ["HF_TOKEN"],
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPEN_ROUTER_API_KEY"],
 )
 
 
@@ -26,7 +27,8 @@ def generate_hashtags(quote_data: dict) -> list:
     )
     try:
         completion = client.chat.completions.create(
-            model="moonshotai/Kimi-K2-Instruct",
+            extra_body={},
+            model="moonshotai/kimi-k2:free",
             messages=[{"role": "user", "content": prompt}],
         )
 

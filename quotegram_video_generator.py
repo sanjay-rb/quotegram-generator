@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from moviepy import (
     CompositeAudioClip,
@@ -29,22 +30,25 @@ def generate_quotegram_video(quote_data):
         print(f"Generating quotegram video: {quote} - {author}")
 
         # Load file example.mp4 and keep only the subclip from 00:00:10 to 00:00:20
-        # Reduce the audio volume to 80% of its original volume
+        # Resize the video to 1080x1920
+        size = 1080, 1920
+        # Video Length: 10 seconds
+        length = 10
 
         clip = (
             VideoFileClip(FILE_BACKGROUND_VIDEO)
             .subclipped(10, 20)
-            .resized(new_size=(1080, 1920))
-            .with_volume_scaled(0.8)
+            .resized(new_size=size)
         )
 
         # Generate a text clip. You can customize the font, color, etc.
+
         txt_clip = TextClip(
-            text=f"{quote}\n- {author}",
+            text=f"{datetime.now().strftime('%d %B %Y')}\n{quote}\n- {author}",
             font=FILE_FONT,
             font_size=60,
             color="white",
-            size=(1080, 1920),
+            size=size,
             method="caption",
             text_align="center",
             duration=10,
