@@ -5,6 +5,9 @@ on:
     - cron: '30 3 * * 1,3,5'  # 9:00 AM IST = 3:30 AM UTC on Mon, Wed, Fri
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   quotegram-generator-and-telegram:
     runs-on: ubuntu-latest
