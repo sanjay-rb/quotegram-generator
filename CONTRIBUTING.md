@@ -1,6 +1,5 @@
 ### 📄 `CONTRIBUTING.md`
 
-````markdown
 # Contributing to Quotegram Generator
 
 Thank you for your interest in contributing to **Quotegram Generator**! We welcome all kinds of contributions – from bug fixes and new features to improvements in documentation.
@@ -67,5 +66,3 @@ If you run into any issues, feel free to:
 * Tag us in a PR
 
 Thanks for contributing 💛
-
-```
