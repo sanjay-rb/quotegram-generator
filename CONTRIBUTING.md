@@ -11,7 +11,7 @@ Thank you for your interest in contributing to **Quotegram Generator**! We welco
 2. **Clone** your fork locally:
    ```bash
    git clone https://github.com/sanjay-rb/quotegram-generator.git
-````
+```
 
 3. **Create a new branch** for your changes:
 
