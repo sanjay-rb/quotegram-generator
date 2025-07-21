@@ -36,6 +36,8 @@ def generate_hashtags(quote_data: dict) -> list:
         # Extract hashtags - words starting with #
         hashtags = re.findall(r"#\w+", str(completion))
 
+        # TODO: Add predefined hashtags
+
         # Deduplicate while preserving order
         seen = set()
         unique_hashtags = []
