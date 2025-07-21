@@ -39,7 +39,7 @@ def generate_quotegram_video(quote_data):
         # Generate a text clip. You can customize the font, color, etc.
 
         txt_clip = TextClip(
-            text=f"{datetime.now().strftime('%d %B %Y')}\n{quote}\n- {author}",
+            text=f"{{quote}\n- {author}",
             font=RES_FONT_FILE,
             font_size=60,
             color="white",
