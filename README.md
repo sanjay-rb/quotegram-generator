@@ -44,7 +44,6 @@ This project automates the content creation process end-to-end:
 
 The workflow runs automatically:
 
-* On every push to the `main` branch
 * On a fixed schedule: every **Monday, Wednesday, and Friday at 09:00 AM IST**
 
 > ⚠️ **Note:** The schedule is set to thrice weekly to stay within the Hugging Face Inference API monthly usage limit of approximately \$0.10. Running more frequently may exceed your free tier or budget.
