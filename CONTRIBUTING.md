@@ -1,5 +1,3 @@
-### 📄 `CONTRIBUTING.md`
-
 # Contributing to Quotegram Generator
 
 Thank you for your interest in contributing to **Quotegram Generator**! We welcome all kinds of contributions – from bug fixes and new features to improvements in documentation.
