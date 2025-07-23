@@ -32,14 +32,14 @@ jobs:
       - name: Generate Quote
         run: |
           python3 generator/quote_generator.py
+      
+      - name: Generate Hashtags
+        run: |
+          python3 generator/hashtags_generator.py
 
       - name: Generate Image
         run: |
           python3 generator/image_generator.py
-
-      - name: Generate Hashtags
-        run: |
-          python3 generator/hashtags_generator.py
 
       - name: Generate Quotegram Video
         run: |
