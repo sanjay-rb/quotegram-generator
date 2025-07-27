@@ -38,6 +38,8 @@ def generate_hashtags(quote_data: dict) -> list:
 
         hashtags += [
             "#live",
+            "#trending",
+            "#trend",
             "#shorts",
             "#reels",
             "#inspiration",
