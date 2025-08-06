@@ -16,7 +16,7 @@ def generate_image_from_quote(quote_data: dict) -> str:
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
-        prompt = f"{quote} - {author}, inspirational, cinematic, trending on artstation, 4k, Make sure that you keep space on top & left corner empty. Expected result in high quality, detailed, vibrant colors, modern art style"
+        prompt = f"{quote} - {author}, inspirational, cinematic, trending on artstation, 4k, Make sure that you keep space on top & left corner empty. Expected result in high quality, detailed, vibrant colors, modern art style, no-text,  no-watermark, no-logo, no-signature, no-words, no-letters, no-numbers, no-emoji, no-symbols, no-characters"
         print(f"Generating image for prompt: {prompt}")
 
         # Generate image using the text-to-image model
