@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2025-07-27
+## [1.0.6] - 2025-08-10
 
 ### 🔧 Features:
 - Introduced predefined hashtags for posts. 
