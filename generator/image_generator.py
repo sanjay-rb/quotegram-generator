@@ -22,7 +22,7 @@ def generate_image_from_quote(quote_data: dict) -> str:
         # Generate image using the text-to-image model
         image = client.text_to_image(
             prompt=prompt,
-            model="stabilityai/stable-diffusion-xl-base-1.0",
+            model="black-forest-labs/FLUX.1-dev",
         )
         image.save(OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT)
         print(f"Image saved to {OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT}")
