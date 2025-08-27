@@ -1,11 +1,6 @@
 from datetime import datetime
 import json
-from moviepy import (
-    ImageClip,
-    TextClip,
-    CompositeVideoClip,
-    vfx,
-)
+from moviepy import ImageClip, TextClip, CompositeVideoClip, vfx, ColorClip
 from dotenv import load_dotenv
 import os
 
@@ -15,6 +10,12 @@ from const import *
 # 3. Create video with text and voiceover
 def generate_quotegram_video(quote_data):
     try:
+        SAFE_PADDING = {
+            "left_right": 150,  # Horizontal padding
+            "top": 250,
+            "bottom": 350,
+        }
+
         # Load environment variables
         load_dotenv()
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
@@ -36,23 +37,43 @@ def generate_quotegram_video(quote_data):
                 new_size=size
             )
 
+        # Optional: Semi-transparent black overlay across the entire video
+        overlay = ColorClip(size=size, color=(0, 0, 0, int(255 * 0.5)), duration=length)
+        overlay = overlay.with_effects([vfx.CrossFadeIn(duration=5)])
+
         # Generate a text clip. You can customize the font, color, etc.
 
-        txt_clip = TextClip(
-            text=f"{quote}\n- {author}",
-            font=RES_FONT_FILE,
-            font_size=60,
-            color="white",
-            bg_color=(0, 0, 0, int(255 * 0.5)),
-            size=size,
-            method="caption",
-            text_align="center",
-            duration=length,
-            transparent=True,
-        ).with_effects([vfx.CrossFadeIn(duration=5)])
+        # Calculate safe text block size
+        text_width = size[0] - 2 * SAFE_PADDING["left_right"]
+        text_height = size[1] - SAFE_PADDING["top"] - SAFE_PADDING["bottom"]
+
+        import textwrap
+
+        wrapped_quote = textwrap.fill(
+            quote,
+            width=text_width // 25,
+        )  # Adjust width to taste
+
+        # Create text clip within the safe zone
+        txt_clip = (
+            TextClip(
+                text=f"{wrapped_quote}\n- {author}",
+                font=RES_FONT_FILE,
+                font_size=55,
+                color="white",
+                # bg_color=(0, 0, 0, int(255 * 0.5)),
+                size=(text_width, text_height),
+                method="caption",
+                text_align="center",
+                duration=length,
+                transparent=True,
+            )
+            .with_position(("center", SAFE_PADDING["top"]))
+            .with_effects([vfx.CrossFadeIn(duration=5)])
+        )
 
         # Overlay the text clip on the first video clip
-        final_video = CompositeVideoClip([clip, txt_clip])
+        final_video = CompositeVideoClip([clip, overlay, txt_clip])
         final_video.write_videofile(OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT, fps=24)
         return OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT
     except Exception as e:
