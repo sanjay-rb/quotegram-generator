@@ -29,7 +29,7 @@ def generate_hashtags(quote_data: dict) -> list:
 
         completion = client.chat.completions.create(
             extra_body={},
-            model="moonshotai/kimi-k2:free",
+            model="nvidia/nemotron-nano-9b-v2:free",
             messages=[{"role": "user", "content": prompt}],
         )
 
