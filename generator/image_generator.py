@@ -1,5 +1,6 @@
 import json
 import os
+import random
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 from const import *
@@ -20,9 +21,14 @@ def generate_image_from_quote(quote_data: dict) -> str:
         print(f"Generating image for prompt: {prompt}")
 
         # Generate image using the text-to-image model
+        models = [
+            "stabilityai/stable-diffusion-xl-base-1.0",
+            "black-forest-labs/FLUX.1-schnell",
+            "stabilityai/stable-diffusion-3-medium-diffusers",
+        ]
         image = client.text_to_image(
             prompt=prompt,
-            model="black-forest-labs/FLUX.1-dev",
+            model=random.choice(models),
         )
         image.save(OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT)
         print(f"Image saved to {OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT}")
