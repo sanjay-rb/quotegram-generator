@@ -1,13 +1,18 @@
 # OUTPUT FILES
+OUT_QUOTE_TODAY_FILE = "output/quote_today.json"  # File to store today's quote
 OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT = (
     "output/quotegram_video.mp4"  # Final output video file
 )
 OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT = (
     "output/quotegram_image.png"  # Final output image file
 )
-OUT_QUOTE_TODAY_FILE = "output/quote_today.json"  # File to store today's quote
-OUT_HASHTAGS_TODAY_FILE = "output/hashtags_today.txt"  # File to store today's hashtags
+OUT_YOUTUBE_TITLE_TODAY_FILE = (
+    "output/youtube_title_today.txt"  # File to store today's YouTube title
+)
 
+OUT_INSTA_CAPTION_TODAY_FILE = (
+    "output/insta_caption_today.txt"  # File to store today's Instagram caption
+)
 
 # CONSTANTS
 CONST_DEFAULT_QUOTE = {
