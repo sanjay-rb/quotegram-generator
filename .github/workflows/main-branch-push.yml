@@ -36,9 +36,13 @@ jobs:
         run: |
           python3 generator/quote_generator.py
       
-      - name: Generate Hashtags
+      - name: Generate Youtube Title
         run: |
-          python3 generator/hashtags_generator.py
+          python3 generator/youtube_title_generator.py
+      
+      - name: Generate Instagram Caption
+        run: |
+          python3 generator/insta_caption_generator.py
 
       - name: Generate Image
         run: |

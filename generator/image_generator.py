@@ -11,7 +11,7 @@ def generate_image_from_quote(quote_data: dict) -> str:
         load_dotenv()
 
         client = InferenceClient(
-            provider="hf-inference",
+            # provider="hf-inference",
             api_key=os.environ["HF_TOKEN"],
         )
 
@@ -25,10 +25,15 @@ def generate_image_from_quote(quote_data: dict) -> str:
             "stabilityai/stable-diffusion-xl-base-1.0",
             "black-forest-labs/FLUX.1-schnell",
             "stabilityai/stable-diffusion-3-medium-diffusers",
+            "playgroundai/playground-v2.5-1024px-aesthetic",
+            "Qwen/Qwen-Image",
+            "ByteDance/SDXL-Lightning",
+            "HiDream-ai/HiDream-I1-Full",
         ]
         image = client.text_to_image(
             prompt=prompt,
-            model=random.choice(models),
+            # model=random.choice(models),
+            model="playgroundai/playground-v2.5-1024px-aesthetic",
         )
         image.save(OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT)
         print(f"Image saved to {OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT}")
