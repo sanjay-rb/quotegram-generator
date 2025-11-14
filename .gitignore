@@ -208,3 +208,4 @@ __marimo__/
 
 # My Ignore
 .DS_Store
+client_secrets.json
