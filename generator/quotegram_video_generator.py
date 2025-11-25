@@ -30,7 +30,6 @@ def generate_quotegram_video(quote_data):
         OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
         RES_BACKGROUND_IMAGE = os.getenv("RES_BACKGROUND_IMAGE")
         RES_FONT_FILE = os.getenv("RES_FONT_FILE")
-        RES_BGM_FILE = os.getenv("RES_BGM_FILE")
 
         CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
@@ -80,6 +79,8 @@ def generate_quotegram_video(quote_data):
         )
 
         # --- ADD BGM (Background Music) ---
+        random_index = datetime.now().microsecond % 5 + 1
+        RES_BGM_FILE = os.getenv(f"RES_BGM_FILE_{random_index}")
         if os.path.exists(RES_BGM_FILE):
             print("Adding background music:", RES_BGM_FILE)
 
@@ -107,7 +108,6 @@ def generate_quotegram_video(quote_data):
         if audio:
             final_video = final_video.with_audio(audio)
             print("Background music added to the video.")
-            print(f"Audio : {final_video.audio}s")
         final_video.write_videofile(
             OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT,
             fps=24,
