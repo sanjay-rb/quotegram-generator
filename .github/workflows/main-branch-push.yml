@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '30 23 * * 0,2,4'  # At 23:30 on Sunday, Tuesday, and Thursday. UTC 
   workflow_dispatch:
+    inputs:
+      upload_youtube:
+        description: 'Whether to upload the video to YouTube?'
+        type: boolean
+        required: false
+        default: true
 
 permissions:
   contents: read
@@ -51,6 +57,11 @@ jobs:
       - name: Generate Quotegram Video
         run: |
           python3 generator/quotegram_video_generator.py
+        
+      - name: Upload Youtube Video
+        if: ${{ github.event.inputs.upload_youtube == 'true' }}
+        run: |
+          python3 upload/youtube_short_upload.py
 
       - name: Generate Telegram Message
         run: |
