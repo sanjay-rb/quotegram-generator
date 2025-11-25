@@ -3,17 +3,20 @@ import os
 import random
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
-from const import *
 
 
 def generate_image_from_quote(quote_data: dict) -> str:
     try:
         load_dotenv()
 
+        OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT = os.getenv("OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT")
+
         client = InferenceClient(
-            # provider="hf-inference",
+            provider="hf-inference",
             api_key=os.environ["HF_TOKEN"],
         )
+
+        CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
@@ -22,18 +25,14 @@ def generate_image_from_quote(quote_data: dict) -> str:
 
         # Generate image using the text-to-image model
         models = [
+            "black-forest-labs/FLUX.1-dev",
             "stabilityai/stable-diffusion-xl-base-1.0",
             "black-forest-labs/FLUX.1-schnell",
             "stabilityai/stable-diffusion-3-medium-diffusers",
-            "playgroundai/playground-v2.5-1024px-aesthetic",
-            "Qwen/Qwen-Image",
-            "ByteDance/SDXL-Lightning",
-            "HiDream-ai/HiDream-I1-Full",
         ]
         image = client.text_to_image(
             prompt=prompt,
-            # model=random.choice(models),
-            model="playgroundai/playground-v2.5-1024px-aesthetic",
+            model=random.choice(models),
         )
         image.save(OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT)
         print(f"Image saved to {OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT}")
@@ -44,6 +43,8 @@ def generate_image_from_quote(quote_data: dict) -> str:
 
 
 def main():
+    load_dotenv()
+    OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
     with open(OUT_QUOTE_TODAY_FILE, "r") as f:
         quote_data = json.load(f)
 
