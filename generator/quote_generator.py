@@ -1,12 +1,14 @@
 # 1. Load quote for today
 import json
+import os
+from dotenv import load_dotenv
 import requests
-
-from const import *
 
 
 def generate_quote():
     try:
+        load_dotenv()
+        OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
         print(f"Generating quote for today...")
         response = requests.get("https://zenquotes.io/api/today")
         response.raise_for_status()
@@ -20,6 +22,7 @@ def generate_quote():
             raise ValueError("Failed to fetch quote from API.")
     except Exception as e:
         print(f"Error generating quote: {e}")
+        CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
         return CONST_DEFAULT_QUOTE
 
 

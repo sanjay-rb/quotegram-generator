@@ -3,8 +3,6 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from const import *
-
 
 def send_telegram_video(bot_token, chat_id, video_path):
     """Send a video (no caption) to Telegram."""
@@ -34,11 +32,16 @@ def generate_telegram_message(quote_data):
     try:
         # Load environment variables
         load_dotenv()
+        OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT = os.getenv("OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT")
+        OUT_YOUTUBE_TITLE_TODAY_FILE = os.getenv("OUT_YOUTUBE_TITLE_TODAY_FILE")
+        OUT_INSTA_CAPTION_TODAY_FILE = os.getenv("OUT_INSTA_CAPTION_TODAY_FILE")
+        OUT_YOUTUBE_URL_TODAY_FILE = os.getenv("OUT_YOUTUBE_URL_TODAY_FILE")
 
         # --- Configuration ---
         bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
         chat_id = os.environ["TELEGRAM_CHAT_ID"]
 
+        CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
         print(f"Generating telegram message: {quote} - {author}")
@@ -59,6 +62,12 @@ def generate_telegram_message(quote_data):
             send_telegram_text(bot_token, chat_id, insta_caption)
             print("✅ Instagram caption message sent.")
 
+        # --- Send youtube url message ---
+        with open(OUT_YOUTUBE_URL_TODAY_FILE, "r") as f:
+            youtube_url = f.read().strip()
+            send_telegram_text(bot_token, chat_id, youtube_url)
+            print("✅ YouTube url message sent.")
+
         return True
 
     except Exception as e:
@@ -67,6 +76,8 @@ def generate_telegram_message(quote_data):
 
 
 def main():
+    load_dotenv()
+    OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
     with open(OUT_QUOTE_TODAY_FILE, "r") as f:
         quote_data = json.load(f)
 

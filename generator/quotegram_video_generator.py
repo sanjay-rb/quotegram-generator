@@ -1,10 +1,16 @@
 from datetime import datetime
 import json
-from moviepy import ImageClip, TextClip, CompositeVideoClip, vfx, ColorClip
+from moviepy import (
+    CompositeAudioClip,
+    ImageClip,
+    TextClip,
+    CompositeVideoClip,
+    vfx,
+    ColorClip,
+    AudioFileClip,
+)
 from dotenv import load_dotenv
 import os
-
-from const import *
 
 
 # 3. Create video with text and voiceover
@@ -18,16 +24,24 @@ def generate_quotegram_video(quote_data):
 
         # Load environment variables
         load_dotenv()
+
+        OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT = os.getenv("OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT")
+        OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT = os.getenv("OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT")
+        OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
+        RES_BACKGROUND_IMAGE = os.getenv("RES_BACKGROUND_IMAGE")
+        RES_FONT_FILE = os.getenv("RES_FONT_FILE")
+        RES_BGM_FILE = os.getenv("RES_BGM_FILE")
+
+        CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
         print(f"Generating quotegram video: {quote} - {author}")
 
-        # Load file example.mp4 and keep only the subclip from 00:00:10 to 00:00:20
-        # Resize the video to 1080x1920
+        # Video config
         size = 1080, 1920
-        # Video Length: 10 seconds
-        length = 10
+        length = 10  # seconds
 
+        # Load background image (fallback logic)
         if not os.path.exists(OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT):
             clip = ImageClip(RES_BACKGROUND_IMAGE, duration=length).resized(
                 new_size=size
@@ -37,31 +51,24 @@ def generate_quotegram_video(quote_data):
                 new_size=size
             )
 
-        # Optional: Semi-transparent black overlay across the entire video
+        # Semi-transparent overlay
         overlay = ColorClip(size=size, color=(0, 0, 0, int(255 * 0.5)), duration=length)
         overlay = overlay.with_effects([vfx.CrossFadeIn(duration=5)])
 
-        # Generate a text clip. You can customize the font, color, etc.
+        # --- TEXT WRAPPING ---
+        import textwrap
 
-        # Calculate safe text block size
         text_width = size[0] - 2 * SAFE_PADDING["left_right"]
         text_height = size[1] - SAFE_PADDING["top"] - SAFE_PADDING["bottom"]
 
-        import textwrap
+        wrapped_quote = textwrap.fill(quote, width=text_width // 25)
 
-        wrapped_quote = textwrap.fill(
-            quote,
-            width=text_width // 25,
-        )  # Adjust width to taste
-
-        # Create text clip within the safe zone
         txt_clip = (
             TextClip(
                 text=f"{wrapped_quote}\n- {author}",
                 font=RES_FONT_FILE,
                 font_size=55,
                 color="white",
-                # bg_color=(0, 0, 0, int(255 * 0.5)),
                 size=(text_width, text_height),
                 method="caption",
                 text_align="center",
@@ -72,16 +79,51 @@ def generate_quotegram_video(quote_data):
             .with_effects([vfx.CrossFadeIn(duration=5)])
         )
 
-        # Overlay the text clip on the first video clip
+        # --- ADD BGM (Background Music) ---
+        if os.path.exists(RES_BGM_FILE):
+            print("Adding background music:", RES_BGM_FILE)
+
+            bgm = AudioFileClip(RES_BGM_FILE)
+
+            # Loop background music if it's shorter than the video
+            if bgm.duration < length:
+                loop_count = int(length // bgm.duration) + 1
+                bgm = bgm.loop(n=loop_count)
+
+            # Trim the BGM to exactly match the video length
+            bgm = bgm.with_duration(length)
+
+            # MoviePy 2.x requires CompositeAudioClip
+            audio = CompositeAudioClip([bgm]).with_duration(length)
+
+        else:
+            print("⚠ No BGM file found at:", RES_BGM_FILE)
+            audio = None
+
+        # --- FINAL VIDEO ---
         final_video = CompositeVideoClip([clip, overlay, txt_clip])
-        final_video.write_videofile(OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT, fps=24)
+
+        # Attach audio
+        if audio:
+            final_video = final_video.with_audio(audio)
+            print("Background music added to the video.")
+            print(f"Audio : {final_video.audio}s")
+        final_video.write_videofile(
+            OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT,
+            fps=24,
+            audio_codec="aac",
+        )
+
         return OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT
+
     except Exception as e:
         print(f"Error generating quotegram video: {e}")
         return None
 
 
 def main():
+    load_dotenv()
+    OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
     with open(OUT_QUOTE_TODAY_FILE, "r") as f:
         quote_data = json.load(f)
 
