@@ -5,17 +5,18 @@ import traceback
 from openai import OpenAI
 from dotenv import load_dotenv
 
-from const import *
-
 
 def generate_youtube_title(quote_data: dict) -> list:
     try:
         load_dotenv()
+        OUT_YOUTUBE_TITLE_TODAY_FILE = os.getenv("OUT_YOUTUBE_TITLE_TODAY_FILE")
 
         client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=os.environ["OPEN_ROUTER_API_KEY"],
         )
+
+        CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
@@ -51,6 +52,8 @@ def generate_youtube_title(quote_data: dict) -> list:
 
 
 def main():
+    load_dotenv()
+    OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
     with open(OUT_QUOTE_TODAY_FILE, "r") as f:
         quote_data = json.load(f)
 
