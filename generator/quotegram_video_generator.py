@@ -80,7 +80,7 @@ def generate_quotegram_video(quote_data):
         )
 
         # --- ADD BGM (Background Music) ---
-        random_index = datetime.now().microsecond % RES_BGM_COUNT + 1
+        random_index = datetime.now().microsecond % int(RES_BGM_COUNT) + 1
         RES_BGM_FILE = os.getenv(f"RES_BGM_FILE_{random_index}")
         if os.path.exists(RES_BGM_FILE):
             print("Adding background music:", RES_BGM_FILE)
