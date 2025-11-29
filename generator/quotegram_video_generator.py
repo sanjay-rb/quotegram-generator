@@ -1,5 +1,7 @@
 from datetime import datetime
 import json
+import subprocess
+import sys
 from moviepy import (
     CompositeAudioClip,
     ImageClip,
@@ -125,6 +127,10 @@ def generate_quotegram_video(quote_data):
 def main():
     load_dotenv()
     OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
+
+    # Upgrade moviepy to avoid compatibility issues
+    subprocess.run([sys.executable, "-m", "pip", "install", "moviepy==2.2.1"])
+
     with open(OUT_QUOTE_TODAY_FILE, "r") as f:
         quote_data = json.load(f)
 
