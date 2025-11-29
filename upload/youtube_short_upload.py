@@ -1,4 +1,5 @@
 import json
+import time
 from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -57,12 +58,18 @@ def upload_youtube_short(youtube_title, insta_caption):
     # -------------------------------------
     # 2. Set Thumbnail
     # -------------------------------------
+
+    # Wait for processing (3–5 seconds)
+    print("Waiting for YouTube to process video before setting thumbnail...")
+    time.sleep(5)
+
     thumbnail_file = OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT
-
     thumb_request = youtube.thumbnails().set(
-        videoId=video_id, media_body=MediaFileUpload(thumbnail_file)
+        videoId=video_id,
+        media_body=MediaFileUpload(
+            thumbnail_file, resumable=False
+        ),  # resumable must be False
     )
-
     thumb_response = thumb_request.execute()
     print(f"Thumbnail set! {thumb_response}")
     with open(OUT_YOUTUBE_URL_TODAY_FILE, "w") as f:
