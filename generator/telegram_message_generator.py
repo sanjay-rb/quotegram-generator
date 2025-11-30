@@ -36,6 +36,7 @@ def generate_telegram_message(quote_data):
         OUT_YOUTUBE_TITLE_TODAY_FILE = os.getenv("OUT_YOUTUBE_TITLE_TODAY_FILE")
         OUT_INSTA_CAPTION_TODAY_FILE = os.getenv("OUT_INSTA_CAPTION_TODAY_FILE")
         OUT_YOUTUBE_URL_TODAY_FILE = os.getenv("OUT_YOUTUBE_URL_TODAY_FILE")
+        OUT_INSTA_URL_TODAY_FILE = os.getenv("OUT_INSTA_URL_TODAY_FILE")
 
         # --- Configuration ---
         bot_token = os.environ["TELEGRAM_BOT_TOKEN"]
@@ -67,6 +68,12 @@ def generate_telegram_message(quote_data):
             youtube_url = f.read().strip()
             send_telegram_text(bot_token, chat_id, youtube_url)
             print("✅ YouTube url message sent.")
+
+        # --- Send instagram url message ---
+        with open(OUT_INSTA_URL_TODAY_FILE, "r") as f:
+            insta_url = f.read().strip()
+            send_telegram_text(bot_token, chat_id, insta_url)
+            print("✅ Instagram url message sent.")
 
         return True
 

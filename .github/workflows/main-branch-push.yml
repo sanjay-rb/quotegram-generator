@@ -5,7 +5,7 @@ on:
     - cron: '30 23 * * 0,2,4'  # At 23:30 on Sunday, Tuesday, and Thursday. UTC 
   workflow_dispatch:
     inputs:
-      upload_youtube:
+      upload_video:
         description: 'Whether to upload the video to YouTube?'
         type: boolean
         required: false
@@ -59,9 +59,14 @@ jobs:
           python3 generator/quotegram_video_generator.py
         
       - name: Upload Youtube Video
-        if: ${{ github.event.inputs.upload_youtube == 'true' }}
+        if: ${{ github.event.inputs.upload_video != 'false' }}
         run: |
           python3 upload/youtube_short_upload.py
+      
+      - name: Upload Instagram Video
+        if: ${{ github.event.inputs.upload_video != 'false' }}
+        run: |
+          python3 upload/insta_reel_upload.py
 
       - name: Generate Telegram Message
         run: |
