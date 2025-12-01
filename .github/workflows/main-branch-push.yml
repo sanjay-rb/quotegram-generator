@@ -66,15 +66,15 @@ jobs:
         run: |
           python3 upload/youtube_short_upload.py
       
-      - name: Install requirements_instagrapi.txt
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements_instagrapi.txt
+      # - name: Install requirements_instagrapi.txt
+      #   run: |
+      #     python3 -m pip install --upgrade pip
+      #     pip install -r requirements_instagrapi.txt
       
-      - name: Upload Instagram Video
-        if: ${{ github.event.inputs.upload_video != 'false' }}
-        run: |
-          python3 upload/insta_reel_upload.py
+      # - name: Upload Instagram Video
+      #   if: ${{ github.event.inputs.upload_video != 'false' }}
+      #   run: |
+      #     python3 upload/insta_reel_upload.py
 
       - name: Generate Telegram Message
         run: |
