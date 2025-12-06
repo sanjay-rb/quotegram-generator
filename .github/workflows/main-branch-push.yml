@@ -41,6 +41,10 @@ jobs:
         run: |
           echo "${{ secrets.DOTENV }}" | base64 --decode > .env
 
+      - name: Create insta_settings.json
+        run: |
+          echo "${{ secrets.INSTA_SETTINGS }}" | base64 --decode > insta_settings.json
+
       - name: Generate Quote
         run: |
           python3 generator/quote_generator.py
@@ -70,6 +74,8 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip install -r requirements_instagrapi.txt
+
+      
       
       - name: Upload Instagram Video
         if: ${{ github.event.inputs.upload_video != 'false' }}
