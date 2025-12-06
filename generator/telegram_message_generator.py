@@ -69,11 +69,11 @@ def generate_telegram_message(quote_data):
             send_telegram_text(bot_token, chat_id, youtube_url)
             print("✅ YouTube url message sent.")
 
-        # # --- Send instagram url message ---
-        # with open(OUT_INSTA_URL_TODAY_FILE, "r") as f:
-        #     insta_url = f.read().strip()
-        #     send_telegram_text(bot_token, chat_id, insta_url)
-        #     print("✅ Instagram url message sent.")
+        # --- Send instagram url message ---
+        with open(OUT_INSTA_URL_TODAY_FILE, "r") as f:
+            insta_url = f.read().strip()
+            send_telegram_text(bot_token, chat_id, insta_url)
+            print("✅ Instagram url message sent.")
 
         return True
 
