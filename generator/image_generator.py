@@ -26,9 +26,9 @@ def generate_image_from_quote(quote_data: dict) -> str:
         # Generate image using the text-to-image model
         models = [
             "black-forest-labs/FLUX.1-dev",
-            "stabilityai/stable-diffusion-xl-base-1.0",
+            # "stabilityai/stable-diffusion-xl-base-1.0",
             "black-forest-labs/FLUX.1-schnell",
-            "stabilityai/stable-diffusion-3-medium-diffusers",
+            # "stabilityai/stable-diffusion-3-medium-diffusers",
         ]
         image = client.text_to_image(
             prompt=prompt,
