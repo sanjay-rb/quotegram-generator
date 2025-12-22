@@ -20,12 +20,15 @@ def upload_insta_reel(insta_caption):
         session_dict = cl.load_settings(INSTA_SESSION_FILE)
         sessionid = session_dict.get("authorization_data").get("sessionid")
         cl.login_by_sessionid(sessionid)
+        print("✅ Logged in using existing session.")
 
-    except (LoginRequired, ClientError):
-        print("⚠️ Session expired. Logging in with username & password...")
-        raise ValueError("Session expired. Please re-login manually.")
+    except Exception as e:
+        print(
+            f"⚠️ Session expired with error {e}. Logging in with username & password..."
+        )
+        # # raise ValueError("Session expired. Please re-login manually.")
 
-        # Uncomment below code for Login normally
+        # # Uncomment below code for Login normally
         # INSTA_USERNAME = os.getenv("INSTA_USERNAME")
         # INSTA_PASSWORD = os.getenv("INSTA_PASSWORD")
         # cl = Client()
@@ -60,11 +63,11 @@ def main():
     with open(OUT_INSTA_CAPTION_TODAY_FILE, "r") as f:
         insta_caption = f.read().strip()
 
-    youtube_url = upload_insta_reel(insta_caption)
-    if youtube_url:
-        print("Uploaded to youtube:", youtube_url)
+    insta_url = upload_insta_reel(insta_caption)
+    if insta_url:
+        print("Uploaded to instagram:", insta_url)
     else:
-        raise RuntimeError("Failed to upload youtube.")
+        raise RuntimeError("Failed to upload instagram.")
 
 
 if __name__ == "__main__":
