@@ -26,9 +26,9 @@ def upload_insta_reel(insta_caption):
         print(
             f"⚠️ Session expired with error {e}. Logging in with username & password..."
         )
-        # # raise ValueError("Session expired. Please re-login manually.")
+        raise ValueError("Session expired. Please re-login manually.")
 
-        # # Uncomment below code for Login normally
+        # Uncomment below code for Login normally
         # INSTA_USERNAME = os.getenv("INSTA_USERNAME")
         # INSTA_PASSWORD = os.getenv("INSTA_PASSWORD")
         # cl = Client()
