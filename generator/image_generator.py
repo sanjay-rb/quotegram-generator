@@ -20,7 +20,12 @@ def generate_image_from_quote(quote_data: dict) -> str:
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
-        prompt = f"{quote} - {author}, inspirational, cinematic, trending on artstation, 4k, Make sure that you keep space on top & left corner empty. Expected result in high quality, detailed, vibrant colors, modern art style, no-text,  no-watermark, no-logo, no-signature, no-words, no-letters, no-numbers, no-emoji, no-symbols, no-characters"
+        prompt = f"""Goal: Create an inspirational, cinematic modern artwork visually inspired by the meaning and emotion of {quote} by {author}, without displaying any text.
+Context: Translate the quote's theme into visual form using a high-end ArtStation aesthetic, rendered in 4K with vibrant colors, cinematic lighting, and a modern art style. Preserve intentional negative space in the top area and left corner.
+Deliverable: One high-quality, highly detailed digital artwork with rich colors, cinematic atmosphere, polished finish, and clear negative space in the top and left areas.
+Guardrails: No text, no quote, no author name, no words, no letters, no numbers, no watermarks, no logos, no signatures, no emojis, no symbols, no characters. Avoid clutter, blur, noise, artifacts, flat lighting, dull colors, cartoon or outdated styles.
+Autonomy: Freely choose visual elements, composition, lighting, and color palette while strictly following all constraints.
+Self-Check: Ensure the artwork conveys the quote's spirit without text, is cinematic and modern, meets 4K quality, keeps the top and left areas visually clear, and contains no forbidden elements."""
         print(f"Generating image for prompt: {prompt}")
 
         # Generate image using the text-to-image model
