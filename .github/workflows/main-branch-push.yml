@@ -2,11 +2,11 @@ name: Main Branch Push
 
 on:
   schedule:
-    - cron: '30 23 * * 0,2,4'  # At 23:30 on Sunday, Tuesday, and Thursday. UTC 
+    - cron: "30 23 * * 0,2,4"
   workflow_dispatch:
     inputs:
       upload_video:
-        description: 'Whether to upload the video to YouTube?'
+        description: "Whether to upload the video to YouTube?"
         type: boolean
         required: false
         default: true
@@ -30,13 +30,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.12.3'
+          python-version: "3.12.3"
 
       - name: Install requirements.txt
         run: |
           python3 -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: Create .env
         run: |
           echo "${{ secrets.DOTENV }}" | base64 --decode > .env
@@ -48,11 +48,11 @@ jobs:
       - name: Generate Quote
         run: |
           python3 generator/quote_generator.py
-      
+
       - name: Generate Youtube Title
         run: |
           python3 generator/youtube_title_generator.py
-      
+
       - name: Generate Instagram Caption
         run: |
           python3 generator/insta_caption_generator.py
@@ -64,23 +64,21 @@ jobs:
       - name: Generate Quotegram Video
         run: |
           python3 generator/quotegram_video_generator.py
-        
+
       - name: Upload Youtube Video
         if: ${{ github.event.inputs.upload_video != 'false' }}
         run: |
           python3 upload/youtube_short_upload.py
-      
-      - name: Install requirements_instagrapi.txt
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements_instagrapi.txt
 
-      
-      
-      - name: Upload Instagram Video
-        if: ${{ github.event.inputs.upload_video != 'false' }}
-        run: |
-          python3 upload/insta_reel_upload.py
+      # - name: Install requirements_instagrapi.txt
+      #   run: |
+      #     python3 -m pip install --upgrade pip
+      #     pip install -r requirements_instagrapi.txt
+
+      # - name: Upload Instagram Video
+      #   if: ${{ github.event.inputs.upload_video != 'false' }}
+      #   run: |
+      #     python3 upload/insta_reel_upload.py
 
       - name: Generate Telegram Message
         run: |
