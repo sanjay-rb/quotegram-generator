@@ -26,7 +26,7 @@ def generate_insta_caption(quote_data: dict) -> list:
 
         completion = client.chat.completions.create(
             extra_body={},
-            model="nvidia/nemotron-nano-9b-v2:free",
+            model="arcee-ai/trinity-mini:free",
             messages=[{"role": "user", "content": prompt}],
         )
         output = completion.choices[0].message.content.strip()
