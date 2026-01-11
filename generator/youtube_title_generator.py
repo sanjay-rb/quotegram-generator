@@ -22,15 +22,36 @@ def generate_youtube_title(quote_data: dict) -> list:
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
         print(f"Generating hashtags: {quote} - {author}")
 
-        prompt = f"Generate a youtube video title for the quote: \n\n{quote} - {author}\n\n within 100 characters. Make it fesible to copy paste directly between --- markers."
+        prompt = f"""
+        **Goal:**
+Generate a YouTube video title for a given quote and author.
 
+**Context:**
+Input will be provided in the format:
+`{quote} - {author}`
+
+**Deliverable:**
+Return **one** YouTube video title that is **ready to copy-paste directly between `---` markers**.
+
+**Guardrails:**
+
+* Must be **100 characters or fewer**
+* No hashtags, emojis, or quotation marks
+* No explanations or additional text
+* Output only the title
+
+**Autonomy:**
+You may creatively rephrase or frame the quote while preserving its original meaning.
+
+**Self-Check:**
+Verify the output is a single line, under 100 characters, and immediately usable without editing.
+"""
         completion = client.chat.completions.create(
             extra_body={},
-            model="nvidia/nemotron-nano-9b-v2:free",
+            model="arcee-ai/trinity-mini:free",
             messages=[{"role": "user", "content": prompt}],
         )
         output = completion.choices[0].message.content.strip()
-
         # Extract content between --- markers
         match = re.search(r"---\s*(.*?)\s*---", output, re.DOTALL)
 
