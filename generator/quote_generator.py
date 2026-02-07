@@ -1,36 +1,19 @@
-# 1. Load quote for today
-import json
-import os
-from dotenv import load_dotenv
 import requests
+import logging
 
 
-def generate_quote():
+def generate_quote() -> dict:
     try:
-        load_dotenv()
-        OUT_QUOTE_TODAY_FILE = os.getenv("OUT_QUOTE_TODAY_FILE")
-        print(f"Generating quote for today...")
+        logging.info(f"Generating quote from zenquotes.io")
         response = requests.get("https://zenquotes.io/api/today")
         response.raise_for_status()
         data = response.json()
-
-        if isinstance(data, list) and data:
-            with open(OUT_QUOTE_TODAY_FILE, "w") as f:
-                json.dump(data[0], f, indent=4)
-            return data[0]
-        else:
-            raise ValueError("Failed to fetch quote from API.")
+        return data[0]
     except Exception as e:
-        print(f"Error generating quote: {e}")
-        CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
-        return CONST_DEFAULT_QUOTE
-
-
-def main():
-    quote = generate_quote()
-    print(f"Generated quote: {quote}")
-    return quote
-
-
-if __name__ == "__main__":
-    main()
+        logging.error(f"Unexpected error occurred while generating quote: {e}")
+        logging.error(f"Generating fallback quote")
+        return {
+            "q": "Create each day anew.",
+            "a": "Morihei Ueshiba",
+            "h": "<blockquote>&ldquo;Create each day anew.&rdquo; &mdash; <footer>Morihei Ueshiba</footer></blockquote>",
+        }

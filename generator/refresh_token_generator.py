@@ -1,3 +1,4 @@
+import logging
 from google_auth_oauthlib.flow import InstalledAppFlow
 from pathlib import Path
 import os
@@ -59,4 +60,4 @@ update_env_file("YOUTUBE_CLIENT_ID", client_id)
 update_env_file("YOUTUBE_CLIENT_SECRET", client_secret)
 update_env_file("YOUTUBE_TOKEN_URI", token_uri)
 
-print("✔ Tokens successfully saved to .env")
+logging.info("✔ Tokens successfully saved to .env")

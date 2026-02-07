@@ -1,46 +1,63 @@
 <!-- GitHub Copilot Instructions for the quotegram-generator repo -->
 
 # Purpose
-Short, actionable guidance to help an AI coding assistant (Copilot-style) be immediately productive in this repository.
+Concise, repo-specific guidance to help an AI coding assistant be productive here.
 
 **Big picture**
-- This project produces short quote-based social media assets and uploads them. Major pieces live under `generator/` (content generation), `upload/` (platform-specific upload helpers), `output/` (generated artifacts), and `resource/` (static assets/config).
-- Typical flow: a quote is written/read from `output/quote_today.json` -> a generator (e.g. `generator/quote_generator.py`, `generator/insta_caption_generator.py`, `generator/youtube_description_generator.py`) produces text and writes to an `output` file -> upload scripts in `upload/` read those output files and perform posting.
+- This repo generates "quotegram" social assets and (optionally) uploads them. Main areas:
+  - `generator/`: creates quotes, titles, descriptions, images, and videos
+  - `upload/`: platform upload helpers (YouTube uploader)
+  - `output/`: artifact files produced/consumed by scripts
+  - `resource/`: background images, fonts, and BGM assets
+- Typical flow: `output/quote_today.json` -> generators read/write `output/*` files -> `upload/` or `generator/telegram_message_generator.py` consumes outputs to post or notify.
 
-**Key files and examples**
-- Generators: `generator/insta_caption_generator.py`, `generator/youtube_description_generator.py`, `generator/quote_generator.py`.
-  - Generators use `load_dotenv()` and expect environment variables such as `OUT_QUOTE_TODAY_FILE`, `OUT_INSTA_CAPTION_TODAY_FILE`, `OUT_YOUTUBE_DESCRIPTION_TODAY_FILE`, and `OPEN_ROUTER_API_KEY`.
-  - They build LLM prompts and call the OpenAI-compatible client: `client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=os.environ["OPEN_ROUTER_API_KEY"])`.
-  - Generated text is commonly surrounded with `---` markers. Code extracts content using the regex: `r"---\s*(.*?)\s*---"` (see generator files).
-- Uploads: `upload/insta_reel_upload.py`, `upload/youtube_short_upload.py` consume outputs produced by generators; do not change the output file contract unless you update upload code accordingly.
-- Settings: `insta_settings.json` contains Instagram upload settings; `output/` files include `insta_caption_today.txt`, `quote_today.json`, `youtube_title_today.txt`, etc.
+**Key files & examples**
+- `generator/quote_generator.py`: fetches quote (fallback to built-in JSON if network fails).
+- `generator/title_generator.py` and `generator/description_generator.py`: call the OpenRouter/OpenAI-compatible client and write to `OUT_YOUTUBE_TITLE_TODAY_FILE` and `OUT_YOUTUBE_DESCRIPTION_TODAY_FILE` respectively.
+- `generator/video_generator.py`: produces `OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT` and uses env keys `RES_BACKGROUND_IMAGE`, `RES_FONT_FILE`, `RES_BGM_COUNT`, `RES_BGM_FILE_{n}`.
+- `generator/telegram_message_generator.py`: posts video/title/url to Telegram using `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`.
+- `upload/youtube_short_uploader.py`: uploads `OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT`, sets thumbnail `OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT`, and writes `OUT_YOUTUBE_URL_TODAY_FILE` (requires `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`).
 
-**Important conventions & patterns**
-- Environment-driven I/O: scripts rarely accept CLI args; they rely on `.env` keys and write to files named by env values. When adding features, prefer keeping the same env-driven contract.
-- Prompting pattern: produce user-facing text between `---` markers so the generator code can reliably extract content. When modifying prompts, preserve the markers in examples and make extraction robust.
-- Minimal error handling: generators catch exceptions, print a traceback, and return `None`. The `main()` of each generator raises a `RuntimeError` when generation fails. Calling code (or CI) should treat non-zero exit / exceptions as failures.
-- Client usage: all LLM calls use `client.chat.completions.create(..., model="openrouter/free")`; avoid switching model strings without checking downstream expectations.
+**Important env vars used across the codebase**
+- Output file keys: `OUT_QUOTE_TODAY_FILE`, `OUT_YOUTUBE_TITLE_TODAY_FILE`, `OUT_YOUTUBE_DESCRIPTION_TODAY_FILE`, `OUT_YOUTUBE_URL_TODAY_FILE`, `OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT`, `OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT`.
+- LLM: `OPEN_ROUTER_API_KEY`.
+- Defaults/resources: `CONST_DEFAULT_QUOTE` (JSON string), `RES_BACKGROUND_IMAGE`, `RES_FONT_FILE`, `RES_BGM_COUNT`, `RES_BGM_FILE_1...N`.
+- Posting/upload creds: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`.
 
-**Dependencies & run commands**
-- Install dependencies: `pip install -r requirements.txt` (and `requirements_instagrapi.txt` if using Instagram upload helpers).
-- Quick run examples:
-  - Generate Instagram caption: `python generator/insta_caption_generator.py`
-  - Generate YouTube description: `python generator/youtube_description_generator.py`
-  - Generate quote JSON: `python generator/quote_generator.py`
-- Environment: ensure `.env` (or shell env) has `OPEN_ROUTER_API_KEY` and `OUT_*` variables. `CONST_DEFAULT_QUOTE` is expected to be JSON-encoded in env in current code.
+**Conventions & patterns to preserve**
+- Environment-driven I/O: scripts expect `.env` values and write/read fixed files. Avoid changing the env keys without updating all consumers.
+- LLM outputs are expected to be framed between `---` markers; generators parse with `r"---\s*(.*?)\s*---"` in a DOTALL match. Keep this format when editing prompts.
+- Generators return the content (string) or `None` and also write outputs to the file paths defined by environment variables.
+- Error handling is intentionally minimal: exceptions are printed and `None` returned; `main()` often raises `RuntimeError` on failure — CI should treat non-zero exits as failures.
 
-**Integration points & external systems**
-- OpenRouter/OpenAI-compatible API via `OPEN_ROUTER_API_KEY` and `base_url="https://openrouter.ai/api/v1"`.
-- Instagram/Youtube upload flows rely on 3rd-party libraries (see `requirements_instagrapi.txt`), and `insta_settings.json` for credentials/settings.
+**Repo-specific gotchas / things to watch for**
+- Some `main()` functions call different function names than those declared (example: `description_generator.py`'s `main()` references `generate_youtube_description` while the defined function is `generate_description`). Check function names when editing or adding runners.
+- Tests use `unittest` and relative imports; run them from repo root with `PYTHONPATH=.` to avoid ImportErrors.
+- `video_generator.py` installs `moviepy==2.2.1` at runtime to avoid compatibility issues — expect that side-effect when running locally.
+- Instagram-related scripts/settings were intentionally removed from the repo; do not reintroduce `insta_*` references unless you also restore their files and settings.
 
-**What to modify carefully**
-- Changing output filenames or environment variable names requires edits in both the generator and upload scripts.
-- Changing the prompt format requires updating the regex extraction or adding fallbacks; prefer leaving `---` markers intact in prompts.
+**Integration points**
+- OpenRouter/OpenAI-compatible chat completions: `OpenAI(base_url="https://openrouter.ai/api/v1", api_key=...)` and `client.chat.completions.create(..., model="openrouter/free")`.
+- YouTube upload: Google OAuth `Credentials` + `googleapiclient`.
+- Telegram: direct HTTP calls to Telegram Bot API.
 
-**If you're editing or adding generators**
-- Keep function semantics: generator functions return the generated string or `None` on error.
-- Write outputs to files specified by env vars and avoid hardcoding paths.
-- Add a `main()` that reads `OUT_QUOTE_TODAY_FILE` and calls the generator so scripts remain runnable.
+**Run & test commands (concrete)**
+- Install deps: `pip install -r requirements.txt`
+- Generate a quote JSON: `python generator/quote_generator.py`
+- Generate title/description: `python generator/title_generator.py` / `python generator/description_generator.py`
+- Build video: `python generator/video_generator.py` (will ensure `moviepy==2.2.1`)
+- Upload to YouTube: `python upload/youtube_short_uploader.py`
+- Run tests from repo root:
+  - `PYTHONPATH=. python -m unittest discover -s test -v`
+  - or `PYTHONPATH=. python test/unittest.py`
+
+**When editing code**
+- Preserve env-driven contracts; update all consumers if you rename an env key or output filename.
+- Update the `---` extraction regex when changing prompt output format.
+- Keep generator functions returning content or `None` and writing to env-defined files.
 
 ---
-If anything above is unclear or you'd like more detail (examples for unit tests, CI hooks, or a `.env.example`), tell me which section to expand.
+If you'd like, I can:
+- add a `.env.example` listing the common keys,
+- fix the inconsistent `main()` function-name bugs in the generators,
+- or add a small `scripts/` runner or `Makefile` to standardize run/test commands. Which should I do next?

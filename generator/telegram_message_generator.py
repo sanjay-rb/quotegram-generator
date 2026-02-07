@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import requests
 from dotenv import load_dotenv
@@ -43,28 +44,28 @@ def generate_telegram_message(quote_data):
         CONST_DEFAULT_QUOTE = json.loads(os.getenv("CONST_DEFAULT_QUOTE"))
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
-        print(f"Generating telegram message: {quote} - {author}")
+        logging.info(f"Generating telegram message: {quote} - {author}")
 
         # --- Send the video (no caption) ---
         send_telegram_video(bot_token, chat_id, OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT)
-        print("✅ Video sent successfully (no caption).")
+        logging.info("✅ Video sent successfully (no caption).")
 
         # --- Send youtube title message ---
         with open(OUT_YOUTUBE_TITLE_TODAY_FILE, "r") as f:
             youtube_title = f.read().strip()
             send_telegram_text(bot_token, chat_id, youtube_title)
-            print("✅ YouTube title message sent.")
+            logging.info("✅ YouTube title message sent.")
 
         # --- Send youtube url message ---
         with open(OUT_YOUTUBE_URL_TODAY_FILE, "r") as f:
             youtube_url = f.read().strip()
             send_telegram_text(bot_token, chat_id, youtube_url)
-            print("✅ YouTube url message sent.")
+            logging.info("✅ YouTube url message sent.")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error generating telegram message: {e}")
+        logging.error(f"❌ Error generating telegram message: {e}")
         return False
 
 
@@ -76,7 +77,7 @@ def main():
 
     success = generate_telegram_message(quote_data)
     if success:
-        print("All Telegram messages sent successfully.")
+        logging.info("All Telegram messages sent successfully.")
     else:
         raise RuntimeError("Failed to send Telegram messages.")
 
