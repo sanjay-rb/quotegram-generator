@@ -20,13 +20,13 @@ def generate_insta_caption(quote_data: dict) -> list:
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
-        print(f"Generating hashtags: {quote} - {author}")
+        print(f"Generating Instagram caption: {quote} - {author}")
 
         prompt = f"Generate a instagram reels caption with atleast 25 hashtags for the quote: \n\n{quote} - {author}\n\n. Make it fesible to copy paste directly between --- markers."
 
         completion = client.chat.completions.create(
-            extra_body={},
-            model="arcee-ai/trinity-mini:free",
+            extra_body={"reasoning": {"enabled": True}},
+            model="openrouter/free",
             messages=[{"role": "user", "content": prompt}],
         )
         output = completion.choices[0].message.content.strip()
@@ -45,7 +45,7 @@ def generate_insta_caption(quote_data: dict) -> list:
 
         return content.strip()
     except Exception as e:
-        print(f"Error generating hashtags: {e}")
+        print(f"Error generating insta caption: {e}")
         traceback.print_exc()
         return None
 
@@ -60,7 +60,7 @@ def main():
     if output:
         print("Generated Instagram Caption:", output)
     else:
-        raise RuntimeError("Failed to generate hashtags.")
+        raise RuntimeError("Failed to generate instagram caption.")
 
 
 if __name__ == "__main__":

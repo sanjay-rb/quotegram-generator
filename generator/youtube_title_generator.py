@@ -20,7 +20,7 @@ def generate_youtube_title(quote_data: dict) -> list:
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
-        print(f"Generating hashtags: {quote} - {author}")
+        print(f"Generating YouTube title: {quote} - {author}")
 
         prompt = f"""
         **Goal:**
@@ -47,8 +47,8 @@ You may creatively rephrase or frame the quote while preserving its original mea
 Verify the output is a single line, under 100 characters, and immediately usable without editing.
 """
         completion = client.chat.completions.create(
-            extra_body={},
-            model="arcee-ai/trinity-mini:free",
+            extra_body={"reasoning": {"enabled": True}},
+            model="openrouter/free",
             messages=[{"role": "user", "content": prompt}],
         )
         output = completion.choices[0].message.content.strip()
@@ -67,7 +67,7 @@ Verify the output is a single line, under 100 characters, and immediately usable
         return content.strip()
 
     except Exception as e:
-        print(f"Error generating hashtags: {e}")
+        print(f"Error generating youtube title: {e}")
         traceback.print_exc()
         return None
 
@@ -82,7 +82,7 @@ def main():
     if output:
         print("Generated Youtube Title:", output)
     else:
-        raise RuntimeError("Failed to generate hashtags.")
+        raise RuntimeError("Failed to generate youtube title.")
 
 
 if __name__ == "__main__":

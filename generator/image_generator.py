@@ -25,37 +25,52 @@ def generate_visual_theme(quote_data: dict) -> str:
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
 
         prompt = f"""
-Turn this quote into ONE short visual background scene.
+        **Instruction:**
 
-Quote: "{quote}" - {author}
+You are a theme generator.
+Given a quote and its author, produce a **background theme description** in **5–12 words** that captures the **mood and emotional tone**.
 
 Rules:
-- Nature/atmosphere only (sky, mountains, ocean, clouds, light, forest)
-- No people, objects, text, UI, symbols
-- 5-12 words exactly
-- Cinematic background with empty space
 
-Return ONLY the scene between --- markers.
-Example: --- golden light piercing through dark storm clouds ---
+* Do **not** describe a specific image
+* Do **not** include the quote text or author name
+* No punctuation
+* Return **only** the theme text
+
+---
+
+**Examples:**
+
+Quote: “The only way out is through” — Robert Frost
+Theme: resilience through struggle and quiet determination
+
+Quote: “Happiness depends upon ourselves” — Aristotle
+Theme: inner peace and mindful self awareness
+
+Quote: “In the middle of difficulty lies opportunity” — Albert Einstein
+Theme: optimism emerging from challenge and uncertainty
+
+Quote: “Not all those who wander are lost” — J R R Tolkien
+Theme: freedom curiosity and purposeful exploration
+
+---
+
+**Now generate a theme for:**
+
+Quote: “{quote}” — {author}
+Theme:
 """
 
         print(f"Extracting visual theme from: {quote[:50]}...")
         completion = client.chat.completions.create(
-            extra_body={},
-            model="arcee-ai/trinity-mini:free",
+            extra_body={"reasoning": {"enabled": True}},
+            model="openrouter/free",
             messages=[{"role": "user", "content": prompt}],
         )
 
         output = completion.choices[0].message.content.strip()
-        match = re.search(r"---\s*(.*?)\s*---", output, re.DOTALL)
-
-        if match:
-            visual_theme = match.group(1).strip()
-        else:
-            visual_theme = output.strip().split("\n")[0].strip()
-
-        print(f"Generated visual theme: '{visual_theme}'")
-        return visual_theme
+        print(f"Generated visual theme: '{output}'")
+        return str(output)
 
     except Exception as e:
         print(f"Error in theme generation: {e}")
