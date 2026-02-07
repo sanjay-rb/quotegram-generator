@@ -1,79 +1,97 @@
+"""
+Upload a generated video to YouTube Shorts.
+
+This module authenticates with the YouTube Data API v3, uploads a video
+as a Short, sets a custom thumbnail, and returns the resulting Shorts URL.
+"""
+
 import logging
+import os
 import time
+from typing import Final
+
 from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
-import os
-
-from common.constants import (
-    OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT,
-    OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT,
-    OUT_YOUTUBE_URL_TODAY_FILE,
-)
 
 
-def upload_youtube_short(youtube_title):
-    """Uploads a YouTube Short video and sets its thumbnail."""
-    # Load environment variables
+YOUTUBE_UPLOAD_SCOPE: Final = "https://www.googleapis.com/auth/youtube.upload"
+TOKEN_URI: Final = "https://oauth2.googleapis.com/token"
+PROCESSING_DELAY_SECONDS: Final = 5
 
+
+def upload_youtube_short(
+    video_path: str,
+    thumbnail_path: str,
+    youtube_title: str,
+    youtube_description: str,
+) -> str:
+    """Upload a YouTube Short video and set its thumbnail.
+
+    Args:
+        video_path: Path to the MP4 video file.
+        thumbnail_path: Path to the thumbnail image.
+        youtube_title: Title of the YouTube Short.
+        youtube_description: Description of the YouTube Short.
+
+    Returns:
+        URL of the uploaded YouTube Short.
+    """
     load_dotenv()
-    CLIENT_ID = os.getenv("YOUTUBE_CLIENT_ID")
-    CLIENT_SECRET = os.getenv("YOUTUBE_CLIENT_SECRET")
-    REFRESH_TOKEN = os.getenv("YOUTUBE_REFRESH_TOKEN")
 
-    creds = Credentials(
-        None,
-        refresh_token=REFRESH_TOKEN,
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
-        scopes=["https://www.googleapis.com/auth/youtube.upload"],
+    client_id = os.getenv("YOUTUBE_CLIENT_ID")
+    client_secret = os.getenv("YOUTUBE_CLIENT_SECRET")
+    refresh_token = os.getenv("YOUTUBE_REFRESH_TOKEN")
+
+    if not all((client_id, client_secret, refresh_token)):
+        raise RuntimeError("Missing required YouTube API credentials")
+
+    credentials = Credentials(
+        token=None,
+        refresh_token=refresh_token,
+        token_uri=TOKEN_URI,
+        client_id=client_id,
+        client_secret=client_secret,
+        scopes=[YOUTUBE_UPLOAD_SCOPE],
     )
 
-    youtube = build("youtube", "v3", credentials=creds)
+    youtube = build("youtube", "v3", credentials=credentials)
 
-    # -------------------------------------
-    # 1. Upload Short
-    # -------------------------------------
-    upload_request = youtube.videos().insert(
+    upload_request = youtube.videos().insert(  # pylint: disable=no-member
         part="snippet,status",
         body={
             "snippet": {
                 "title": youtube_title,
-                "description": youtube_title,
+                "description": youtube_description,
                 "tags": ["shorts"],
                 "categoryId": "22",
             },
             "status": {"privacyStatus": "public"},
         },
         media_body=MediaFileUpload(
-            OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT,
+            video_path,
+            mimetype="video/mp4",
             resumable=True,
         ),
     )
 
     response = upload_request.execute()
     video_id = response["id"]
-    logging.info("Uploaded Video: %s", video_id)
+    logging.info("Uploaded video with ID: %s", video_id)
 
-    # -------------------------------------
-    # 2. Set Thumbnail
-    # -------------------------------------
+    logging.info(
+        "Waiting %s seconds for YouTube to process video before "
+        "setting thumbnail...",
+        PROCESSING_DELAY_SECONDS,
+    )
+    time.sleep(PROCESSING_DELAY_SECONDS)
 
-    # Wait for processing (3–5 seconds)
-    logging.info("Waiting for YouTube to process video before setting thumbnail...")
-    time.sleep(5)
-
-    thumbnail_file = OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT
-    thumb_request = youtube.thumbnails().set(
+    thumb_request = youtube.thumbnails().set(  # pylint: disable=no-member
         videoId=video_id,
-        media_body=MediaFileUpload(
-            thumbnail_file, resumable=False
-        ),  # resumable must be False
+        media_body=MediaFileUpload(thumbnail_path, resumable=False),
     )
     thumb_response = thumb_request.execute()
-    logging.info("Thumbnail set! %s", thumb_response)
-    with open(OUT_YOUTUBE_URL_TODAY_FILE, "w") as f:
-        f.write("https://www.youtube.com/shorts/" + video_id)
-    return "https://www.youtube.com/shorts/" + video_id
+    logging.info("Thumbnail set successfully: %s", thumb_response)
+
+    return f"https://www.youtube.com/shorts/{video_id}"

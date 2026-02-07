@@ -26,7 +26,7 @@ from common.constants import (
 
 
 # 3. Create video with text and voiceover
-def generate_video(quote_data, image_path):
+def generate_video(quote_data, image_path) -> str:
     # Load environment variables
     load_dotenv()
 

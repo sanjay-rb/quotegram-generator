@@ -45,15 +45,6 @@ jobs:
         run: |
           python3 main.py
 
-      - name: Upload Youtube Video
-        if: ${{ github.event.inputs.upload_video != 'false' }}
-        run: |
-          python3 upload/youtube_short_uploader.py
-
-      - name: Generate Telegram Message
-        run: |
-          python3 generator/telegram_message_generator.py
-
       - name: Send Error Telegram Message
         if: failure()
         run: |
