@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 from dotenv import load_dotenv
 from google.oauth2.credentials import Credentials
@@ -7,7 +8,7 @@ from googleapiclient.http import MediaFileUpload
 import os
 
 
-def upload_youtube_short(youtube_title, insta_caption):
+def upload_youtube_short(youtube_title):
     """Uploads a YouTube Short video and sets its thumbnail."""
     # Load environment variables
 
@@ -39,7 +40,7 @@ def upload_youtube_short(youtube_title, insta_caption):
         body={
             "snippet": {
                 "title": youtube_title,
-                "description": insta_caption,
+                "description": youtube_title,
                 "tags": ["shorts"],
                 "categoryId": "22",
             },
@@ -53,14 +54,14 @@ def upload_youtube_short(youtube_title, insta_caption):
 
     response = upload_request.execute()
     video_id = response["id"]
-    print("Uploaded Video:", video_id)
+    logging.info("Uploaded Video: %s", video_id)
 
     # -------------------------------------
     # 2. Set Thumbnail
     # -------------------------------------
 
     # Wait for processing (3–5 seconds)
-    print("Waiting for YouTube to process video before setting thumbnail...")
+    logging.info("Waiting for YouTube to process video before setting thumbnail...")
     time.sleep(5)
 
     thumbnail_file = OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT
@@ -71,7 +72,7 @@ def upload_youtube_short(youtube_title, insta_caption):
         ),  # resumable must be False
     )
     thumb_response = thumb_request.execute()
-    print(f"Thumbnail set! {thumb_response}")
+    logging.info("Thumbnail set! %s", thumb_response)
     with open(OUT_YOUTUBE_URL_TODAY_FILE, "w") as f:
         f.write("https://www.youtube.com/shorts/" + video_id)
     return "https://www.youtube.com/shorts/" + video_id
@@ -80,16 +81,12 @@ def upload_youtube_short(youtube_title, insta_caption):
 def main():
     load_dotenv()
     OUT_YOUTUBE_TITLE_TODAY_FILE = os.getenv("OUT_YOUTUBE_TITLE_TODAY_FILE")
-    OUT_INSTA_CAPTION_TODAY_FILE = os.getenv("OUT_INSTA_CAPTION_TODAY_FILE")
     with open(OUT_YOUTUBE_TITLE_TODAY_FILE, "r") as f:
         youtube_title = f.read().strip()
 
-    with open(OUT_INSTA_CAPTION_TODAY_FILE, "r") as f:
-        insta_caption = f.read().strip()
-
-    youtube_url = upload_youtube_short(youtube_title, insta_caption)
+    youtube_url = upload_youtube_short(youtube_title)
     if youtube_url:
-        print("Uploaded to youtube:", youtube_url)
+        logging.info("Uploaded to youtube: %s", youtube_url)
     else:
         raise RuntimeError("Failed to upload youtube.")
 

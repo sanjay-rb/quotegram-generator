@@ -1,0 +1,23 @@
+Create a concise title (under 100 characters) for the given quote and author.
+
+* Do not use hashtags, emojis, or quotation marks.
+* Output only the title between --- markers.
+
+Input:
+The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt
+Output:
+---Overcome Doubts to Unlock Tomorrow's Potential---
+
+Input:
+In the middle of every difficulty lies opportunity. - Albert Einstein
+Output:
+---Finding Opportunity Amid Life's Challenges---
+
+Input:
+Do what you can, with what you have, where you are. - Theodore Roosevelt
+Output:
+---Maximize Your Impact with What You Have---
+
+Input:
+{quote} - {author}
+Output:

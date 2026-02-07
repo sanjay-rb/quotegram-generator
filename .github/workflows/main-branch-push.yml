@@ -1,4 +1,4 @@
-name: Main Branch Push
+name: Quotegram Generator Workflow
 
 on:
   schedule:
@@ -41,44 +41,14 @@ jobs:
         run: |
           echo "${{ secrets.DOTENV }}" | base64 --decode > .env
 
-      - name: Create insta_settings.json
+      - name: Generate Quotegram
         run: |
-          echo "${{ secrets.INSTA_SETTINGS }}" | base64 --decode > insta_settings.json
-
-      - name: Generate Quote
-        run: |
-          python3 generator/quote_generator.py
-
-      - name: Generate Youtube Title
-        run: |
-          python3 generator/youtube_title_generator.py
-
-      - name: Generate Instagram Caption
-        run: |
-          python3 generator/insta_caption_generator.py
-
-      - name: Generate Image
-        run: |
-          python3 generator/image_generator.py
-
-      - name: Generate Quotegram Video
-        run: |
-          python3 generator/quotegram_video_generator.py
+          python3 main.py
 
       - name: Upload Youtube Video
         if: ${{ github.event.inputs.upload_video != 'false' }}
         run: |
-          python3 upload/youtube_short_upload.py
-
-      # - name: Install requirements_instagrapi.txt
-      #   run: |
-      #     python3 -m pip install --upgrade pip
-      #     pip install -r requirements_instagrapi.txt
-
-      # - name: Upload Instagram Video
-      #   if: ${{ github.event.inputs.upload_video != 'false' }}
-      #   run: |
-      #     python3 upload/insta_reel_upload.py
+          python3 upload/youtube_short_uploader.py
 
       - name: Generate Telegram Message
         run: |

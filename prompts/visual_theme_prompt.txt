@@ -1,0 +1,23 @@
+Given a quote and its author, produce a background image theme description in 5–12 words that captures the mood and emotional tone.
+
+* Do not use hashtags, emojis, or quotation marks.
+* Output only the title between --- markers.
+
+Quote: “The only way out is through” — Robert Frost
+Theme: 
+---resilience through struggle and quiet determination---
+
+Quote: “Happiness depends upon ourselves” — Aristotle
+Theme: 
+---inner peace and mindful self awareness---
+
+Quote: “In the middle of difficulty lies opportunity” — Albert Einstein
+Theme: 
+---optimism emerging from challenge and uncertainty---
+
+Quote: “Not all those who wander are lost” — J R R Tolkien
+Theme: 
+---freedom curiosity and purposeful exploration---
+
+Quote: {quote} - {author}
+Theme:
