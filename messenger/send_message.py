@@ -1,3 +1,7 @@
+"""
+Module for sending messages and videos to Telegram using the requests library.
+"""
+
 import os
 from dotenv import load_dotenv
 import requests
@@ -14,7 +18,7 @@ def send_telegram_video(video_path):
     with open(video_path, "rb") as video_file:
         files = {"video": video_file}
         data = {"chat_id": TELEGRAM_CHAT_ID}
-        response = requests.post(url, data=data, files=files)
+        response = requests.post(url, data=data, files=files, timeout=10)
         response.raise_for_status()
         return response.json()
 
@@ -28,6 +32,6 @@ def send_telegram_text(text):
         "text": text,
         "parse_mode": "HTML",
     }
-    response = requests.post(url, data=data)
+    response = requests.post(url, data=data, timeout=10)
     response.raise_for_status()
     return response.json()
