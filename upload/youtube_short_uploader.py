@@ -1,4 +1,3 @@
-import json
 import logging
 import time
 from dotenv import load_dotenv
@@ -7,16 +6,18 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 import os
 
+from common.constants import (
+    OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT,
+    OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT,
+    OUT_YOUTUBE_URL_TODAY_FILE,
+)
+
 
 def upload_youtube_short(youtube_title):
     """Uploads a YouTube Short video and sets its thumbnail."""
     # Load environment variables
 
     load_dotenv()
-    OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT = os.getenv("OUT_QUOTEGRAM_VIDEO_FINAL_OUTPUT")
-    OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT = os.getenv("OUT_QUOTEGRAM_IMAGE_FINAL_OUTPUT")
-    OUT_YOUTUBE_URL_TODAY_FILE = os.getenv("OUT_YOUTUBE_URL_TODAY_FILE")
-
     CLIENT_ID = os.getenv("YOUTUBE_CLIENT_ID")
     CLIENT_SECRET = os.getenv("YOUTUBE_CLIENT_SECRET")
     REFRESH_TOKEN = os.getenv("YOUTUBE_REFRESH_TOKEN")
@@ -76,20 +77,3 @@ def upload_youtube_short(youtube_title):
     with open(OUT_YOUTUBE_URL_TODAY_FILE, "w") as f:
         f.write("https://www.youtube.com/shorts/" + video_id)
     return "https://www.youtube.com/shorts/" + video_id
-
-
-def main():
-    load_dotenv()
-    OUT_YOUTUBE_TITLE_TODAY_FILE = os.getenv("OUT_YOUTUBE_TITLE_TODAY_FILE")
-    with open(OUT_YOUTUBE_TITLE_TODAY_FILE, "r") as f:
-        youtube_title = f.read().strip()
-
-    youtube_url = upload_youtube_short(youtube_title)
-    if youtube_url:
-        logging.info("Uploaded to youtube: %s", youtube_url)
-    else:
-        raise RuntimeError("Failed to upload youtube.")
-
-
-if __name__ == "__main__":
-    main()
