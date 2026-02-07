@@ -1,3 +1,10 @@
+"""
+common/functions.py
+
+This module provides utility functions for interacting with the OpenRouter AI API,
+including sending prompts and retrieving generated text.
+"""
+
 import logging
 import os
 import re
@@ -8,6 +15,20 @@ from common.constants import TEXT_GENERATION_MODEL
 
 
 def ask_open_router(prompt: str) -> str:
+    """
+    Sends a prompt to the OpenRouter AI API and retrieves the generated response.
+
+    The function expects the response to optionally include content
+    between '---' markers. If such content exists, only that portion
+    is returned; otherwise, the full response is returned.
+
+    Args:
+        prompt (str): The prompt string to send to the AI model.
+
+    Returns:
+        str: The extracted content from the AI response, or the full response
+        if no markers are found.
+    """
     load_dotenv()
 
     client = OpenAI(
@@ -27,6 +48,6 @@ def ask_open_router(prompt: str) -> str:
 
     if match:
         return match.group(1).strip()
-    else:
-        logging.warning("No content found between --- markers.")
-        return output.strip()
+
+    logging.warning("No content found between --- markers.")
+    return output.strip()

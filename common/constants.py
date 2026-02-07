@@ -1,3 +1,7 @@
+"""
+This module defines constants used across the QuoteGram Generator project.
+"""
+
 # CONSTANTS
 SAFE_PADDING = {
     "left_right": 150,  # Horizontal padding
