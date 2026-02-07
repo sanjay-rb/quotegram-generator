@@ -41,10 +41,6 @@ jobs:
         run: |
           echo "${{ secrets.DOTENV }}" | base64 --decode > .env
 
-      - name: Create insta_settings.json
-        run: |
-          echo "${{ secrets.INSTA_SETTINGS }}" | base64 --decode > insta_settings.json
-
       - name: Generate Quote
         run: |
           python3 generator/quote_generator.py
@@ -52,10 +48,6 @@ jobs:
       - name: Generate Youtube Title
         run: |
           python3 generator/youtube_title_generator.py
-
-      - name: Generate Instagram Caption
-        run: |
-          python3 generator/insta_caption_generator.py
 
       - name: Generate Image
         run: |

@@ -6,10 +6,12 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 
-def generate_insta_caption(quote_data: dict) -> list:
+def generate_youtube_description(quote_data: dict) -> list:
     try:
         load_dotenv()
-        OUT_INSTA_CAPTION_TODAY_FILE = os.getenv("OUT_INSTA_CAPTION_TODAY_FILE")
+        OUT_YOUTUBE_DESCRIPTION_TODAY_FILE = os.getenv(
+            "OUT_YOUTUBE_DESCRIPTION_TODAY_FILE"
+        )
 
         client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
@@ -20,9 +22,13 @@ def generate_insta_caption(quote_data: dict) -> list:
 
         quote = quote_data.get("q", CONST_DEFAULT_QUOTE["q"])
         author = quote_data.get("a", CONST_DEFAULT_QUOTE["a"])
-        print(f"Generating Instagram caption: {quote} - {author}")
+        print(f"Generating YouTube description: {quote} - {author}")
 
-        prompt = f"Generate a instagram reels caption with atleast 25 hashtags for the quote: \n\n{quote} - {author}\n\n. Make it fesible to copy paste directly between --- markers."
+        prompt = (
+            f"Generate a YouTube video description for a short based on the quote:\n\n{quote} - {author}\n\n"
+            ". Include a concise opening hook, a short description of the quote/context, a call-to-action (subscribe, like, comment), and at least 10 relevant hashtags. "
+            "Make the final output easy to copy-paste by surrounding it between --- markers."
+        )
 
         completion = client.chat.completions.create(
             extra_body={"reasoning": {"enabled": True}},
@@ -40,12 +46,12 @@ def generate_insta_caption(quote_data: dict) -> list:
             print("No content found between --- markers.")
             content = completion.choices[0].message.content.strip()
 
-        with open(OUT_INSTA_CAPTION_TODAY_FILE, "w") as f:
+        with open(OUT_YOUTUBE_DESCRIPTION_TODAY_FILE, "w") as f:
             f.write(content.strip())
 
         return content.strip()
     except Exception as e:
-        print(f"Error generating insta caption: {e}")
+        print(f"Error generating youtube description: {e}")
         traceback.print_exc()
         return None
 
@@ -56,11 +62,11 @@ def main():
     with open(OUT_QUOTE_TODAY_FILE, "r") as f:
         quote_data = json.load(f)
 
-    output = generate_insta_caption(quote_data)
+    output = generate_youtube_description(quote_data)
     if output:
-        print("Generated Instagram Caption:", output)
+        print("Generated YouTube Description:", output)
     else:
-        raise RuntimeError("Failed to generate instagram caption.")
+        raise RuntimeError("Failed to generate youtube description.")
 
 
 if __name__ == "__main__":

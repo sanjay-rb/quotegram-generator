@@ -7,7 +7,7 @@ from googleapiclient.http import MediaFileUpload
 import os
 
 
-def upload_youtube_short(youtube_title, insta_caption):
+def upload_youtube_short(youtube_title):
     """Uploads a YouTube Short video and sets its thumbnail."""
     # Load environment variables
 
@@ -39,7 +39,7 @@ def upload_youtube_short(youtube_title, insta_caption):
         body={
             "snippet": {
                 "title": youtube_title,
-                "description": insta_caption,
+                "description": youtube_title,
                 "tags": ["shorts"],
                 "categoryId": "22",
             },
@@ -80,14 +80,10 @@ def upload_youtube_short(youtube_title, insta_caption):
 def main():
     load_dotenv()
     OUT_YOUTUBE_TITLE_TODAY_FILE = os.getenv("OUT_YOUTUBE_TITLE_TODAY_FILE")
-    OUT_INSTA_CAPTION_TODAY_FILE = os.getenv("OUT_INSTA_CAPTION_TODAY_FILE")
     with open(OUT_YOUTUBE_TITLE_TODAY_FILE, "r") as f:
         youtube_title = f.read().strip()
 
-    with open(OUT_INSTA_CAPTION_TODAY_FILE, "r") as f:
-        insta_caption = f.read().strip()
-
-    youtube_url = upload_youtube_short(youtube_title, insta_caption)
+    youtube_url = upload_youtube_short(youtube_title)
     if youtube_url:
         print("Uploaded to youtube:", youtube_url)
     else:
