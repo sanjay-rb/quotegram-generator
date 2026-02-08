@@ -14,7 +14,7 @@ VIDEO_LENGTH = 10  # seconds
 VIDEO_FPS = 30
 
 # MODELS
-IMAGE_GENERATION_MODEL = "black-forest-labs/FLUX.1-dev"
+IMAGE_GENERATION_MODEL = "black-forest-labs/FLUX.1-schnell"
 TEXT_GENERATION_MODEL = "openrouter/free"
 
 # PROMPT TEMPLATES
