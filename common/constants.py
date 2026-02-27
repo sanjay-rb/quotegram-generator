@@ -27,13 +27,14 @@ PROMPT_IMAGE_GENERATION_TEMPLATE = "prompts/image_generation_prompt.txt"
 RES_FONT_FILE = "resource/My-WinkyRough.ttf"
 RES_BACKGROUND_IMAGE = "resource/background_image.png"
 RES_BGMS = [
-    "resource/background_music_1.mp3",
-    "resource/background_music_2.mp3",
-    "resource/background_music_3.mp3",
-    "resource/background_music_4.mp3",
-    "resource/background_music_5.mp3",
-    "resource/background_music_6.mp3",
-    "resource/background_music_7.mp3",
+    "resource/music/Arizona Dreaming.mp3",
+    "resource/music/Death of a Bluebird.mp3",
+    "resource/music/Else - Paris.mp3",
+    "resource/music/Friendships.mp3",
+    "resource/music/Hell n Back.mp3",
+    "resource/music/Retro.mp3",
+    "resource/music/Saiyaara Reprise - Female.mp3",
+    "resource/music/Timeless.mp3",
 ]
 
 # OUTPUT FILES
