@@ -64,10 +64,10 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        tb = traceback.format_exc()
+        traceback_str = traceback.format_exc()
         logging.error("An error occurred: %s", e)
-        logging.error("Traceback:\n%s", tb)
-        fix_suggestion = ask_llm_for_fix(str(e), tb)
+        logging.error("Traceback:\n%s", traceback_str)
+        fix_suggestion = ask_llm_for_fix(str(e), traceback_str)
         if fix_suggestion:
             logging.info("LLM Fix Suggestion:\n%s", fix_suggestion)
         else:
