@@ -36,10 +36,24 @@ Concise, repo-specific guidance to help an AI coding assistant be productive her
 - `video_generator.py` installs `moviepy==2.2.1` at runtime to avoid compatibility issues — expect that side-effect when running locally.
 - Instagram-related scripts/settings were intentionally removed from the repo; do not reintroduce `insta_*` references unless you also restore their files and settings.
 
+**Common pitfalls and fixes**
+- **ffmpeg missing**: MoviePy VideoWriter crashes → `brew install ffmpeg` (macOS)
+- **HF_TOKEN invalid**: Image generation fails → Verify token in `.env` or GitHub Secrets
+- **OpenRouter rate limit**: LLM calls fail silently → Check API key, usage quota
+- **YouTube token expired**: Upload step raises RuntimeError → Re-run refresh_token_generator.py (not in repo)
+- **BGM file missing**: Video has no audio (logs warning) → Check `resource/music/` paths in constants.py
+- **Text renders blank**: Font path wrong → Fix `RES_FONT_FILE` in constants.py
+
 **Integration points**
 - OpenRouter/OpenAI-compatible chat completions: `OpenAI(base_url="https://openrouter.ai/api/v1", api_key=...)` and `client.chat.completions.create(..., model="openrouter/free")`.
 - YouTube upload: Google OAuth `Credentials` + `googleapiclient`.
 - Telegram: direct HTTP calls to Telegram Bot API.
+
+**CI/CD Workflow**
+- GitHub Actions: `.github/workflows/main-branch-push.yml`
+- Triggers: Scheduled (Mon/Wed/Fri @ 23:30 UTC), Manual (`workflow_dispatch`)
+- Pipeline: Checkout → Python 3.12.3 → Install deps → Pylint check → Decode .env from base64 secret → Run `python main.py`
+- On failure: Send Telegram alert with run ID
 
 **Run & test commands (concrete)**
 - Install deps: `pip install -r requirements.txt`
@@ -47,17 +61,20 @@ Concise, repo-specific guidance to help an AI coding assistant be productive her
 - Generate title/description: `python generator/title_generator.py` / `python generator/description_generator.py`
 - Build video: `python generator/video_generator.py` (will ensure `moviepy==2.2.1`)
 - Upload to YouTube: `python upload/youtube_short_uploader.py`
-- Run tests from repo root:
-  - `PYTHONPATH=. python -m unittest discover -s test -v`
-  - or `PYTHONPATH=. python test/unittest.py`
+- Run tests from repo root: Tests infrastructure exists (pytest.ini) but no tests implemented yet. Add unit tests for generators.
+  - `PYTHONPATH=. python -m unittest discover -s test -v` (when tests are added)
+  - or `PYTHONPATH=. python test/unittest.py` (file does not exist yet)
 
 **When editing code**
 - Preserve env-driven contracts; update all consumers if you rename an env key or output filename.
 - Update the `---` extraction regex when changing prompt output format.
 - Keep generator functions returning content or `None` and writing to env-defined files.
 
----
-If you'd like, I can:
-- add a `.env.example` listing the common keys,
-- fix the inconsistent `main()` function-name bugs in the generators,
-- or add a small `scripts/` runner or `Makefile` to standardize run/test commands. Which should I do next?
+**Opportunity areas for improvement**
+- Add unit tests for generators (quote, title, description) with mocked APIs
+- Fix inconsistent `main()` function names in generators
+- Add standalone execution support (`if __name__ == "__main__":`) to individual generators
+- Create a `.env.example` file listing all required environment variables
+- Add a `scripts/` directory or `Makefile` for standardized run/test commands
+- Implement parallel execution for independent generators (e.g., text generators after quote)
+- Restore or create `refresh_token_generator.py` for YouTube OAuth maintenance
