@@ -1,5 +1,7 @@
 # Quotegram Generator
 
+**Last Updated:** 7 March 2026
+
 An automated Python toolkit that generates quote-based visual content (images and short videos) and uploads to YouTube. The project is modular — each step can be run independently or wired together in automation (e.g., GitHub Actions).
 
 **Quick highlights:**
@@ -66,7 +68,7 @@ python3 generator/quotegram_video_generator.py
 - Upload a video to YouTube (uses Google OAuth credentials):
 
 ```bash
-python3 upload/youtube_short_upload.py
+python3 upload/youtube_short_uploader.py
 ```
 
 Running in CI / GitHub Actions
@@ -90,4 +92,3 @@ License
 If you'd like, I can:
 - run a smoke-check by executing the generators locally (requires credentials),
 - or update a GitHub Actions workflow to match this README's quickstart.
-
