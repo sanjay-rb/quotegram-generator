@@ -6,6 +6,7 @@ upload, and Telegram notifications.
 """
 
 import logging
+import traceback
 
 from generator.image_generator import generate_image
 from generator.quote_generator import generate_quote
@@ -13,6 +14,7 @@ from generator.text_generator import generate_description, generate_title
 from generator.video_generator import generate_video
 from messenger.send_message import send_telegram_text, send_telegram_video
 from upload.youtube_short_uploader import upload_youtube_short
+from common.functions import ask_llm_for_fix
 
 
 logging.basicConfig(
@@ -27,9 +29,13 @@ def main() -> None:
     logging.info("✅Generated quote: %s - %s", quote.get("q"), quote.get("a"))
 
     title = generate_title(quote)
+    if title is None:
+        raise RuntimeError("Failed to generate title")
     logging.info("✅ Generated title: %s", title)
 
     description = generate_description(quote)
+    if description is None:
+        raise RuntimeError("Failed to generate description")
     logging.info("✅ Generated YouTube description: %s", description)
 
     image = generate_image(quote)
@@ -55,4 +61,15 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        tb = traceback.format_exc()
+        logging.error("An error occurred: %s", e)
+        logging.error("Traceback:\n%s", tb)
+        fix_suggestion = ask_llm_for_fix(str(e), tb)
+        if fix_suggestion:
+            logging.info("LLM Fix Suggestion:\n%s", fix_suggestion)
+        else:
+            logging.error("Failed to get fix suggestion from LLM")
+        raise

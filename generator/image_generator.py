@@ -33,6 +33,8 @@ def generate_image(quote_data: Mapping[str, str]) -> str:
     """
     # Step 1: Generate quote-relevant visual theme
     visual_theme = generate_visual_theme(quote_data)
+    if visual_theme is None:
+        raise RuntimeError("Failed to generate visual theme")
 
     # Step 2: Initialize Hugging Face Inference client
     hf_token = os.environ.get("HF_TOKEN")

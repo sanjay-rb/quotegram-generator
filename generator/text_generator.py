@@ -6,7 +6,7 @@ using prompt templates and the OpenRouter API.
 """
 
 import logging
-from typing import Dict
+from typing import Dict, Optional
 
 from dotenv import load_dotenv
 
@@ -25,7 +25,7 @@ def _generate_from_template(
     template_path: str,
     quote_data: Dict[str, str],
     log_label: str,
-) -> str:
+) -> Optional[str]:
     """Generate text using a prompt template and quote data."""
     quote = quote_data.get("q")
     author = quote_data.get("a")
@@ -44,7 +44,7 @@ def _generate_from_template(
     return ask_open_router(prompt)
 
 
-def generate_title(quote_data: Dict[str, str]) -> str:
+def generate_title(quote_data: Dict[str, str]) -> Optional[str]:
     """Generate a YouTube title for a quote."""
     return _generate_from_template(
         PROMPT_TITLE_TEMPLATE,
@@ -53,7 +53,7 @@ def generate_title(quote_data: Dict[str, str]) -> str:
     )
 
 
-def generate_description(quote_data: Dict[str, str]) -> str:
+def generate_description(quote_data: Dict[str, str]) -> Optional[str]:
     """Generate a YouTube description for a quote."""
     return _generate_from_template(
         PROMPT_DESCRIPTION_TEMPLATE,
@@ -62,7 +62,7 @@ def generate_description(quote_data: Dict[str, str]) -> str:
     )
 
 
-def generate_visual_theme(quote_data: Dict[str, str]) -> str:
+def generate_visual_theme(quote_data: Dict[str, str]) -> Optional[str]:
     """Generate a visual theme for a quote."""
     return _generate_from_template(
         PROMPT_VISUAL_THEME_TEMPLATE,
