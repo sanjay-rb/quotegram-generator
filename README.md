@@ -71,6 +71,7 @@ python3 upload/youtube_short_upload.py
 
 Running in CI / GitHub Actions
 - The repository includes GitHub Actions automation for scheduled runs and manual triggers. Store YouTube API credentials and other secrets in repository secrets and inject them into workflow runs.
+- Pull requests are validated with a dedicated pylint pipeline (`pr-validation.yml`) that checks all Python files for code quality issues.
 
 Dependencies
 - See `requirements.txt` for exact pinned packages used in the project.
