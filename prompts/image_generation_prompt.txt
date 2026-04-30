@@ -1,7 +1,1 @@
-{visual_theme}, cinematic abstract background,
-vibrant cinematic colors, with clear details, 4k ultra detailed, modern artstation,
-soft dramatic lighting, atmospheric gradients, subtle texture,
-large clean empty space at top third and left third,
-purely visual atmospheric scene, completely text-free,
-no words, no letters, no numbers, no logos, no watermarks,
-no UI, no icons, no symbols, no text anywhere
+Generate background image with the visual theme {visual_theme}.
