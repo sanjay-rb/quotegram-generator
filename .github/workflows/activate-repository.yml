@@ -1,0 +1,38 @@
+name: Activate Repository
+
+on:
+    schedule:
+        - cron: "0 0 1 * *"
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+jobs:
+    activate:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out triggering branch
+              uses: actions/checkout@v4
+
+            - name: Create or check out activation branch
+              run: |
+                  if git ls-remote --exit-code --heads origin activate-repository >/dev/null 2>&1; then
+                      git fetch origin activate-repository
+                      git checkout -B activate-repository origin/activate-repository
+                  else
+                      git checkout -b activate-repository
+                  fi
+
+            - name: Record repository activity
+              run: |
+                  mkdir -p .github
+                  printf 'Last activated: %s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/last-activated.txt
+
+            - name: Commit to active branch
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add .github/last-activated.txt
+                  git commit -m "chore: activate repository"
+                  git push --set-upstream origin activate-repository
