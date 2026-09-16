@@ -31,9 +31,7 @@ RES_BGMS = [
     "resource/music/Death of a Bluebird.mp3",
     "resource/music/Else - Paris.mp3",
     "resource/music/Friendships.mp3",
-    "resource/music/Hell n Back.mp3",
     "resource/music/Retro.mp3",
-    "resource/music/Saiyaara Reprise - Female.mp3",
     "resource/music/Timeless.mp3",
 ]
 

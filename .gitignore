@@ -210,4 +210,3 @@ __marimo__/
 .DS_Store
 client_secrets.json
 insta_settings.json
-/generator/refresh_token_generator.py
